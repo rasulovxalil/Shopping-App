@@ -102,10 +102,12 @@ export default function CategoryPopper() {
           backgroundColor: '#C2410C', 
           '&:hover': { backgroundColor: '#9A3412' }, 
           textTransform: 'none', 
-          borderRadius: '8px' 
+          borderRadius: '30px',
+          padding: "5px 15px",
+          fontSize: '16px',
         }}
       >
-        Categoriies
+        Categories
       </Button>
 
       <Popper
