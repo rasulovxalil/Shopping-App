@@ -1,0 +1,68 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Mobile phones & Accessories",
+      "slug": "mobile-phones-accessories",
+      "icon": "PhoneAndroidIcon",
+      "subCategories": [
+        { "id": 101, "name": "Smart Watches", "slug": "smart-watches" },
+        { "id": 102, "name": "Screen Protector", "slug": "screen-protector" },
+        { "id": 103, "name": "Adapters", "slug": "adapters" },
+        { "id": 104, "name": "Cabels", "slug": "cabels" },
+        { "id": 105, "name": "Power Banks", "slug": "power-banks" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Computers & Accessories",
+      "slug": "computers-accessories",
+      "icon": "ComputerIcon",
+      "subCategories": [
+        { "id": 201, "name": "Notebooks", "slug": "notebooks" },
+        { "id": 202, "name": "Monitors", "slug": "monitors" },
+        { "id": 203, "name": "Rams", "slug": "rams" },
+        { "id": 204, "name": "Printers", "slug": "printers" }
+      ]
+    }
+    ,
+    {
+      "id": 3,
+      "name": "Tv & Auido",
+      "slug": "tv-audio",
+      "icon": "TvIcon",
+      "subCategories": [
+        { "id": 201, "name": "Smart Tv box", "slug": "smart=tv-box" },
+        { "id": 202, "name": "TV Cables & Adapters", "slug": "tv-cables-adapters" },
+        { "id": 203, "name": "Speakers", "slug": "speakers" },
+        { "id": 204, "name": "Soundbar", "slug": "soundbar" }
+      ]
+    }
+    ,
+    {
+      "id": 4,
+      "name": "Gaming",
+      "slug": "gaming",
+      "icon": "SportsEsportsIcon",
+      "subCategories": [
+        { "id": 301, "name": "Playstation", "slug": "playstation" },
+        { "id": 302, "name": "Xbox", "slug": "xbox" },
+        { "id": 303, "name": "Gaming Accessories", "slug": "gaming-accessories" },
+        { "id": 304, "name": "VR Headset", "slug": "vr-headset" }
+      ]
+    }
+    ,
+    {
+      "id": 5,
+      "name": "Small Domestic Appliances",
+      "slug": "small-domestic-appliances",
+      "icon": "CountertopsIcon",
+      "subCategories": [
+        { "id": 501, "name": "Microwave", "slug": "microwave" },
+        { "id": 502, "name": "Air Fryer", "slug": "air-fryer" },
+        { "id": 503, "name": "Kettle", "slug": "kettle" },
+        { "id": 504, "name": "Coffe Maschine", "slug": "coffee-maschine" }
+      ]
+    }
+  ]
+}
