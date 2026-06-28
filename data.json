@@ -1,68 +1,191 @@
 {
   "categories": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Mobile phones & Accessories",
       "slug": "mobile-phones-accessories",
       "icon": "PhoneAndroidIcon",
       "subCategories": [
-        { "id": 101, "name": "Smart Watches", "slug": "smart-watches" },
-        { "id": 102, "name": "Screen Protector", "slug": "screen-protector" },
-        { "id": 103, "name": "Adapters", "slug": "adapters" },
-        { "id": 104, "name": "Cabels", "slug": "cabels" },
-        { "id": 105, "name": "Power Banks", "slug": "power-banks" }
+        {
+          "id": 101,
+          "name": "Smart Watches",
+          "slug": "smart-watches"
+        },
+        {
+          "id": 102,
+          "name": "Screen Protector",
+          "slug": "screen-protector"
+        },
+        {
+          "id": 103,
+          "name": "Adapters",
+          "slug": "adapters"
+        },
+        {
+          "id": 104,
+          "name": "Cabels",
+          "slug": "cabels"
+        },
+        {
+          "id": 105,
+          "name": "Power Banks",
+          "slug": "power-banks"
+        }
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Computers & Accessories",
       "slug": "computers-accessories",
       "icon": "ComputerIcon",
       "subCategories": [
-        { "id": 201, "name": "Notebooks", "slug": "notebooks" },
-        { "id": 202, "name": "Monitors", "slug": "monitors" },
-        { "id": 203, "name": "Rams", "slug": "rams" },
-        { "id": 204, "name": "Printers", "slug": "printers" }
+        {
+          "id": 201,
+          "name": "Notebooks",
+          "slug": "notebooks"
+        },
+        {
+          "id": 202,
+          "name": "Monitors",
+          "slug": "monitors"
+        },
+        {
+          "id": 203,
+          "name": "Rams",
+          "slug": "rams"
+        },
+        {
+          "id": 204,
+          "name": "Printers",
+          "slug": "printers"
+        }
       ]
-    }
-    ,
+    },
     {
-      "id": 3,
+      "id": "3",
       "name": "Tv & Auido",
       "slug": "tv-audio",
       "icon": "TvIcon",
       "subCategories": [
-        { "id": 201, "name": "Smart Tv box", "slug": "smart=tv-box" },
-        { "id": 202, "name": "TV Cables & Adapters", "slug": "tv-cables-adapters" },
-        { "id": 203, "name": "Speakers", "slug": "speakers" },
-        { "id": 204, "name": "Soundbar", "slug": "soundbar" }
+        {
+          "id": 201,
+          "name": "Smart Tv box",
+          "slug": "smart=tv-box"
+        },
+        {
+          "id": 202,
+          "name": "TV Cables & Adapters",
+          "slug": "tv-cables-adapters"
+        },
+        {
+          "id": 203,
+          "name": "Speakers",
+          "slug": "speakers"
+        },
+        {
+          "id": 204,
+          "name": "Soundbar",
+          "slug": "soundbar"
+        }
       ]
-    }
-    ,
+    },
     {
-      "id": 4,
+      "id": "4",
       "name": "Gaming",
       "slug": "gaming",
       "icon": "SportsEsportsIcon",
       "subCategories": [
-        { "id": 301, "name": "Playstation", "slug": "playstation" },
-        { "id": 302, "name": "Xbox", "slug": "xbox" },
-        { "id": 303, "name": "Gaming Accessories", "slug": "gaming-accessories" },
-        { "id": 304, "name": "VR Headset", "slug": "vr-headset" }
+        {
+          "id": 301,
+          "name": "Playstation",
+          "slug": "playstation"
+        },
+        {
+          "id": 302,
+          "name": "Xbox",
+          "slug": "xbox"
+        },
+        {
+          "id": 303,
+          "name": "Gaming Accessories",
+          "slug": "gaming-accessories"
+        },
+        {
+          "id": 304,
+          "name": "VR Headset",
+          "slug": "vr-headset"
+        }
       ]
-    }
-    ,
+    },
     {
-      "id": 5,
+      "id": "5",
       "name": "Small Domestic Appliances",
       "slug": "small-domestic-appliances",
       "icon": "CountertopsIcon",
       "subCategories": [
-        { "id": 501, "name": "Microwave", "slug": "microwave" },
-        { "id": 502, "name": "Air Fryer", "slug": "air-fryer" },
-        { "id": 503, "name": "Kettle", "slug": "kettle" },
-        { "id": 504, "name": "Coffe Maschine", "slug": "coffee-maschine" }
+        {
+          "id": 501,
+          "name": "Microwave",
+          "slug": "microwave"
+        },
+        {
+          "id": 502,
+          "name": "Air Fryer",
+          "slug": "air-fryer"
+        },
+        {
+          "id": 503,
+          "name": "Kettle",
+          "slug": "kettle"
+        },
+        {
+          "id": 504,
+          "name": "Coffe Maschine",
+          "slug": "coffee-maschine"
+        }
       ]
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "email": "test@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "2",
+      "email": "testapp@gmail.com",
+      "password": "1234567"
+    },
+    {
+      "id": "k6qxb-p2P-s",
+      "email": "salam",
+      "password": "sadsadsa"
+    },
+    {
+      "id": "hMt9cS5Qu1Y",
+      "email": "salaminko",
+      "password": "paswordm olsun"
+    },
+    {
+      "email": "dorduncu user",
+      "password": "salamino894",
+      "id": "KVfzjpQrxi4"
+    },
+    {
+      "email": "dorduncu@gmail.com",
+      "password": "214321434234",
+      "id": "InJ6kbs3uMA"
+    },
+    {
+      "email": "dorduncuuser@gmail.com",
+      "password": "123439393939",
+      "id": "4mIGDuz4rcU"
+    },
+    {
+      "email": "dorduncuuser@gmail.com",
+      "password": "123456799s9s9sA!",
+      "id": "PQsiwfI4NDU"
     }
   ]
 }

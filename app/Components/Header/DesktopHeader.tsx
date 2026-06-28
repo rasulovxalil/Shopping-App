@@ -107,6 +107,7 @@ export default function DesktopHeader() {
               <ShoppingCartIcon sx={{ fontSize: 24 }} />
             </IconButton>
             {/* Login page*/}
+             <Link href="/login">
             <Button
               variant="contained"
               startIcon={
@@ -132,6 +133,7 @@ export default function DesktopHeader() {
             >
               Sign In
             </Button>
+            </Link>
             {/* Language switcher*/}
           <Button
               variant="contained"
