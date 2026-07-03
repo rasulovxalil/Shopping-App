@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MuiProvider from "./Components/Header/ThemeProvider";
 import Header from "./Components/Header/Header";
+import Footer from "./Components/Footer/Footer";
 
 
 
@@ -35,6 +36,7 @@ export default function RootLayout({
         <MuiProvider>
           <Header/>
         {children}
+        <Footer/>
         </MuiProvider>
         </body>
     </html>
