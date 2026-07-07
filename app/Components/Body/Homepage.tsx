@@ -1,6 +1,8 @@
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import AdBanner from './AdBanner';
+import BodyCategory from './BodyCategory';
+import Brands from './Brands';
 export default function HomePage() {
   return (
         <Container maxWidth="lg">
@@ -15,7 +17,8 @@ export default function HomePage() {
       }}
     >
       <AdBanner />
-      
+      <BodyCategory/>
+      <Brands/>
     </Box>
     </Container>
   );

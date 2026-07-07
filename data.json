@@ -9,27 +9,32 @@
         {
           "id": 101,
           "name": "Smart Watches",
-          "slug": "smart-watches"
+          "slug": "smart-watches",
+          "img": "https://imgstore.alta.ge/images/d8ff6587-862d-45ce-9f68-92da99b604e1d5d2d57d-9d9a-4827-9c57-1ba5e8de8806.png"
         },
         {
           "id": 102,
-          "name": "Screen Protector",
-          "slug": "screen-protector"
+          "name": "Mobile Phones",
+          "slug": "mobile-phones",
+          "img": "https://imgstore.alta.ge/images/6ad40fb9-1ba2-4dc2-8c67-3616c803847628f4522e-b021-40ea-957c-2e689b8e321f.png"
         },
         {
           "id": 103,
           "name": "Adapters",
-          "slug": "adapters"
+          "slug": "adapters",
+          "img": "https://imgstore.alta.ge/images/400/134/134732_9804_3.webp"
         },
         {
           "id": 104,
           "name": "Cabels",
-          "slug": "cabels"
+          "slug": "cabels",
+          "img": "https://imgstore.alta.ge/images/400/121/121645_5065_1.webp"
         },
         {
           "id": 105,
           "name": "Power Banks",
-          "slug": "power-banks"
+          "slug": "power-banks",
+          "img": "https://imgstore.alta.ge/images/400/159/159090_2730_2.webp"
         }
       ]
     },
@@ -42,22 +47,26 @@
         {
           "id": 201,
           "name": "Notebooks",
-          "slug": "notebooks"
+          "slug": "notebooks",
+          "img": "https://imgstore.alta.ge/images/66f6beed-1840-427c-bbf9-6149348b612ad9e445be-c0a8-4563-8ef0-a6ae3457f64b.png"
         },
         {
           "id": 202,
           "name": "Monitors",
-          "slug": "monitors"
+          "slug": "monitors",
+          "img": "https://imgstore.alta.ge/images/3af9f434-605e-4778-9339-5808ea61550d8e0c3596-1a4e-4801-a0a4-6872d139dc19.png"
         },
         {
           "id": 203,
-          "name": "Rams",
-          "slug": "rams"
+          "name": "PC components",
+          "slug": "pc-components",
+          "img": "https://imgstore.alta.ge/images/dc2a6bc8-0d4a-498f-9a03-ad3d4091f2af54b52b35-045f-4c27-975e-50b100c8629d.png"
         },
         {
           "id": 204,
           "name": "Printers",
-          "slug": "printers"
+          "slug": "printers",
+          "img": "https://imgstore.alta.ge/images/7bc62f9d-a298-4e01-aec7-9c34bfacc682485f66e5-ceb1-4d3c-8fc2-2b3185a27d6a.png"
         }
       ]
     },
@@ -69,23 +78,27 @@
       "subCategories": [
         {
           "id": 201,
-          "name": "Smart Tv box",
-          "slug": "smart=tv-box"
+          "name": "Smart Tv",
+          "slug": "smart-tv",
+          "img": "https://imgstore.alta.ge/images/96ea10cc-abc0-4f18-b197-385a80e93f16e916eaa0-e4c7-46c3-bf69-56cb11548995.png"
         },
         {
           "id": 202,
           "name": "TV Cables & Adapters",
-          "slug": "tv-cables-adapters"
+          "slug": "tv-cables-adapters",
+          "img": "https://imgstore.alta.ge/images/400/86/86000_2000_1.webp"
         },
         {
           "id": 203,
           "name": "Speakers",
-          "slug": "speakers"
+          "slug": "speakers",
+          "img": "https://imgstore.alta.ge/images/400/144/144468_2596_5.webp"
         },
         {
           "id": 204,
           "name": "Soundbar",
-          "slug": "soundbar"
+          "slug": "soundbar",
+          "img": "https://imgstore.alta.ge/images/a97c3cca-b249-401f-8f51-9d7097aa6ee4_Thumb.jpeg"
         }
       ]
     },
@@ -98,22 +111,26 @@
         {
           "id": 301,
           "name": "Playstation",
-          "slug": "playstation"
+          "slug": "playstation",
+          "img": "https://imgstore.alta.ge/images/164e908e-3766-47e5-b857-56ce1986b810b0f2754b-2ed9-4d4a-9522-219a967aaec4.png"
         },
         {
           "id": 302,
           "name": "Xbox",
-          "slug": "xbox"
+          "slug": "xbox",
+          "img": "https://imgstore.alta.ge/images/2deb61ca-c6e1-4b2c-80ef-aa5bc88adf5a_Thumb.jpeg"
         },
         {
           "id": 303,
           "name": "Gaming Accessories",
-          "slug": "gaming-accessories"
+          "slug": "gaming-accessories",
+          "img": "https://imgstore.alta.ge/images/7261b186-e286-4c85-8313-6772f9c8ff395550a011-cdde-465b-a68b-b45b82ed1f5f.png"
         },
         {
           "id": 304,
           "name": "VR Headset",
-          "slug": "vr-headset"
+          "slug": "vr-headset",
+          "img": "https://imgstore.alta.ge/images/400/162/162346_4962_4.webp"
         }
       ]
     },
@@ -126,22 +143,26 @@
         {
           "id": 501,
           "name": "Microwave",
-          "slug": "microwave"
+          "slug": "microwave",
+          "img": "https://imgstore.alta.ge/images/d5684204-81b0-4ef8-83a5-c9a9e9ade2ee_Thumb.jpeg"
         },
         {
           "id": 502,
           "name": "Air Fryer",
-          "slug": "air-fryer"
+          "slug": "air-fryer",
+          "img": "https://imgstore.alta.ge/images/b8344dc8-2246-4d05-a535-5b5869bc7617_Thumb.jpeg"
         },
         {
           "id": 503,
           "name": "Kettle",
-          "slug": "kettle"
+          "slug": "kettle",
+          "img": "https://imgstore.alta.ge/images/400/150/150054_7838_1.webp"
         },
         {
           "id": 504,
           "name": "Coffe Maschine",
-          "slug": "coffee-maschine"
+          "slug": "coffee-maschine",
+          "img": "https://imgstore.alta.ge/images/400/140/140876_9372_1.webp"
         }
       ]
     }
@@ -192,88 +213,153 @@
     {
       "id": "1",
       "title": "About Us",
-      "slug":"about-us",
-      "body": "Welcome to Shopping App!\n\nAt Shopping App, we are dedicated to making your shopping experience faster, more convenient, and more enjoyable. We are more than just an application; we are a digital bridge that delivers quality products to your doorstep at the most competitive prices.\n\nOur Mission\nOur mission is to value our customers' time. By leveraging advanced technology, we simplify the process of choosing from thousands of products, ensuring you can enjoy shopping with secure payments and fast delivery.\n\nWhy Choose Us?\n\n• Wide Selection: From electronics to home essentials, everything is just a click away.\n• Security: Your data and payments are protected by high-level security protocols.\n• Customer Satisfaction: We are always here for you. If you have any questions, our support team is ready to assist.\n\nWe are building the future of shopping together. Thank you for being a part of our journey!"    
+      "slug": "about-us",
+      "body": "Welcome to Shopping App!\n\nAt Shopping App, we are dedicated to making your shopping experience faster, more convenient, and more enjoyable. We are more than just an application; we are a digital bridge that delivers quality products to your doorstep at the most competitive prices.\n\nOur Mission\nOur mission is to value our customers' time. By leveraging advanced technology, we simplify the process of choosing from thousands of products, ensuring you can enjoy shopping with secure payments and fast delivery.\n\nWhy Choose Us?\n\n• Wide Selection: From electronics to home essentials, everything is just a click away.\n• Security: Your data and payments are protected by high-level security protocols.\n• Customer Satisfaction: We are always here for you. If you have any questions, our support team is ready to assist.\n\nWe are building the future of shopping together. Thank you for being a part of our journey!"
     },
     {
       "id": "2",
       "title": "Who We Are",
-      "slug":"who-we-are",
+      "slug": "who-we-are",
       "body": "Welcome to Shopping App!\n\nWho We Are\nWe are a team of tech enthusiasts and shopping experts dedicated to redefining the digital retail experience. Based in Georgia, we strive to bring global convenience to your local lifestyle through innovative technology and a customer-first approach.\n\nOur Commitment\nWe believe in transparency, quality, and reliability. Every product we list and every service we offer is curated with our users' needs in mind, ensuring that your journey with us is not just a transaction, but a seamless experience built on trust."
     },
     {
       "id": "3",
       "title": "Online Payment Methods",
-      "slug":"online-payment-methods",
+      "slug": "online-payment-methods",
       "body": "Secure and Convenient Payments\n\nAt Shopping App, we offer a variety of safe and reliable online payment methods to ensure a seamless shopping experience for all our customers.\n\nAvailable Payment Options:\n• Credit & Debit Cards: We accept all major Visa and Mastercard cards.\n• Digital Wallets: Fast and secure checkout using local digital payment platforms.\n• Bank Transfer: Direct payment options for larger orders through our partnered banking institutions.\n\nSecurity Guarantee:\nYour financial information is encrypted using industry-standard SSL technology to ensure your transactions remain private and secure at all times."
     },
     {
       "id": "4",
       "title": "Warranty Terms",
-      "slug":"warranty-terms",
+      "slug": "warranty-terms",
       "body": "Warranty Terms and Conditions\n\nAt Shopping App, we stand by the quality of the products we offer. Most items purchased through our platform come with a manufacturer's warranty to ensure your peace of mind.\n\nCoverage Details:\n• Duration: Warranty periods vary by product category, typically ranging from 6 to 24 months.\n• What's Covered: Defects in materials and workmanship under normal use.\n• What's Not Covered: Damage resulting from misuse, unauthorized repairs, or accidental breakage.\n\nHow to Claim:\n1. Keep your original invoice or order confirmation.\n2. Contact our support team via the 'Contact Us' page with your order details.\n3. Our team will guide you through the inspection and repair or replacement process."
     },
     {
       "id": "5",
       "title": "Personal Data Policy",
-      "slug":"personal-data-policy",
-      "body": "Personal Data Protection Policy\n\nAt Shopping App, we value your privacy and are committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data.\n\nInformation We Collect:\n• Account Information: Your name, email address, phone number, and shipping address provided during registration.\n• Transaction Data: Details of your purchases and payment history to facilitate your orders.\n• Usage Data: Information on how you interact with our application to improve your experience.\n\nHow We Use Your Data:\n• To process and deliver your orders efficiently.\n• To communicate updates regarding your account or promotions.\n• To enhance site security and prevent fraudulent activities.\n\nYour Rights:\nYou have the right to access, update, or request the deletion of your personal data at any time by contacting our support team."    }
-      ,
-      {
+      "slug": "personal-data-policy",
+      "body": "Personal Data Protection Policy\n\nAt Shopping App, we value your privacy and are committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data.\n\nInformation We Collect:\n• Account Information: Your name, email address, phone number, and shipping address provided during registration.\n• Transaction Data: Details of your purchases and payment history to facilitate your orders.\n• Usage Data: Information on how you interact with our application to improve your experience.\n\nHow We Use Your Data:\n• To process and deliver your orders efficiently.\n• To communicate updates regarding your account or promotions.\n• To enhance site security and prevent fraudulent activities.\n\nYour Rights:\nYou have the right to access, update, or request the deletion of your personal data at any time by contacting our support team."
+    },
+    {
       "id": "6",
       "title": "Our stores",
-      "slug":"our-stores",
-      "stores":[
+      "slug": "our-stores",
+      "stores": [
         [
-    {
-      "name": "City Mall Saburtalo",
-      "address": "Tbilisi, 1 P. Kavtaradze Str. Trade Center City Mall",
-      "hours": "10:00 - 22:00"
-    },
-    {
-      "name": "Saburtalo Branch",
-      "address": "Tbilisi, 5 Sulkhan Tsintsadze St.",
-      "hours": "10:00 - 20:00"
-    },
-    {
-      "name": "Tbilisi Central",
-      "address": "Tbilisi, 2 Station Square, Trade Center Tbilisi Central",
-      "hours": "10:00 - 21:00"
-    },
-    {
-      "name": "Tbilisi Mall",
-      "address": "Tbilisi, 16th Km. Davit Aghmashenebeli Alley, Trade Center \"Tbilisi Mall\", 1st Floor",
-      "hours": "10:00 - 22:00"
-    },
-    {
-      "name": "East Point",
-      "address": "Tbilisi, 2 Aleksandre Tvalchrelidze Str., Trade Center East Point",
-      "hours": "10:00 - 22:00"
-    }
-  ]
+          {
+            "name": "City Mall Saburtalo",
+            "address": "Tbilisi, 1 P. Kavtaradze Str. Trade Center City Mall",
+            "hours": "10:00 - 22:00"
+          },
+          {
+            "name": "Saburtalo Branch",
+            "address": "Tbilisi, 5 Sulkhan Tsintsadze St.",
+            "hours": "10:00 - 20:00"
+          },
+          {
+            "name": "Tbilisi Central",
+            "address": "Tbilisi, 2 Station Square, Trade Center Tbilisi Central",
+            "hours": "10:00 - 21:00"
+          },
+          {
+            "name": "Tbilisi Mall",
+            "address": "Tbilisi, 16th Km. Davit Aghmashenebeli Alley, Trade Center \"Tbilisi Mall\", 1st Floor",
+            "hours": "10:00 - 22:00"
+          },
+          {
+            "name": "East Point",
+            "address": "Tbilisi, 2 Aleksandre Tvalchrelidze Str., Trade Center East Point",
+            "hours": "10:00 - 22:00"
+          }
+        ]
       ]
     }
-    ],
-  "bannerdata":[
-  {
-    "id": 1,
-    "image": "https://imgstore.alta.ge/images/b90fdb90-0215-4097-a8f6-a2bdb2055eb29966aca1-d0a0-41a1-95e1-3a47114e610b.png"
-  },
-  {
-    "id": 2,
-    "image": "https://imgstore.alta.ge/images/d4c7e212-35a5-4006-b65d-a3f38daaacd73389c465-8f0e-4407-a8e8-d2843f573af9.jpeg"
-  }
+  ],
+  "bannerdata": [
+    {
+      "id": 1,
+      "image": "https://imgstore.alta.ge/images/b90fdb90-0215-4097-a8f6-a2bdb2055eb29966aca1-d0a0-41a1-95e1-3a47114e610b.png"
+    },
+    {
+      "id": 2,
+      "image": "https://imgstore.alta.ge/images/d4c7e212-35a5-4006-b65d-a3f38daaacd73389c465-8f0e-4407-a8e8-d2843f573af9.jpeg"
+    },
+    {
+      "id": 3,
+      "image": "https://imgstore.alta.ge/images/b43bfded-a3a8-42d9-83f8-0ea68c8fb942d6144f58-515e-4116-8341-0654f45c52f1.png"
+    },
+    {
+      "id": 4,
+      "image": "https://imgstore.alta.ge/images/cad5c4b5-fe1a-4fac-b3b6-7c8171676977859e4d18-65db-4697-8732-1383551f89da.png"
+    }
+    
+  ]
   ,
-  {
-    "id": 3,
-    "image": "https://imgstore.alta.ge/images/b43bfded-a3a8-42d9-83f8-0ea68c8fb942d6144f58-515e-4116-8341-0654f45c52f1.png"
-  }
-  ,
-  {
-    "id": 4,
-    "image": "https://imgstore.alta.ge/images/cad5c4b5-fe1a-4fac-b3b6-7c8171676977859e4d18-65db-4697-8732-1383551f89da.png"
-  }
-]
-      
-  
+  "brands": [
+    {
+      "id": 1,
+      "image": "https://imgstore.alta.ge/images/0ecf841c-1801-4ed6-8395-a39a9f46f778baf19204-e7a8-405b-9833-43c0294d20fb.png"
+    },
+    {
+      "id": 2,
+      "image": "https://alta-static.lemon.do/Alta/2d525812-f96e-4c7e-976d-f00df694a2e66322bf61-ba3b-4dc5-81de-e586afa25502.png"
+    },
+    {
+      "id": 3,
+      "image": "https://imgstore.alta.ge/images/c566bf0c-b79c-4507-aa48-f9c10ca27a28250b0ab9-c340-47c4-9af3-184c37d2f2f0.png"
+    },
+    {
+      "id": 4,
+      "image": "https://alta-static.lemon.do/Alta/f248cc48-416e-402b-abb4-4ac5bcf0fc192fb72c8a-4580-41a3-92a0-3505c4165d7b.png"
+    }
+    ,
+    {
+      "id": 5,
+      "image": "https://alta-static.lemon.do/Alta/7296697b-b812-40d7-8817-399ca0f9f27589be87f5-e8fe-4fad-8979-046ce91d4d36.png"
+    }
+    ,
+    {
+      "id": 6,
+      "image": "https://alta-static.lemon.do/Alta/2aaf4691-1c89-4767-b4d9-126e4b3d36555d4d8f1c-770f-4600-af6a-4acfd775da7d.png"
+    }
+    ,
+    {
+      "id": 7,
+      "image": "https://alta-static.lemon.do/Alta/fcd46dca-ad0c-423b-8459-64dd2d9faa2452421330-6a45-4221-b2e8-81990a5c1dea.png"
+    }
+    ,
+    {
+      "id": 8,
+      "image": "https://alta-static.lemon.do/Alta/5e429b3b-4769-4005-a059-04b5f8a9e3547b63a001-5b11-48f7-b762-6eba45159b6e.png"
+    }
+    ,
+    {
+      "id": 9,
+      "image": "https://alta-static.lemon.do/Alta/847d49b0-a6b6-4a39-bb86-3c2d9e11a24ae451bf1a-3671-4414-830e-5dd19b73d9fd.png"
+    }
+    ,
+    {
+      "id":10,
+      "image": "https://alta-static.lemon.do/Alta/81d71bf0-650a-4d3c-8cf2-b5914fb760ebecfad54c-3275-49ac-a5c4-c2982725ae7d.png"
+    }
+    ,
+    {
+      "id": 11,
+      "image": "https://imgstore.alta.ge/images/cad5c4b5-fe1a-4fac-b3b6-7c8171676977859e4d18-65db-4697-8732-1383551f89da.png"
+    },
+    {
+      "id": 12,
+      "image": "https://alta-static.lemon.do/Alta/be1032a6-adce-4d44-a686-4970fea632d1c07983a2-ba0c-4960-a467-d1242ee959e2.png"
+    }
+    ,
+    {
+      "id": 13,
+      "image": "https://alta-static.lemon.do/Alta/e111924f-e4f2-4190-92a6-21e91ca463a292e006a0-9eed-4fb3-a9ee-b938424c0e90.png"
+    }
+    ,
+    {
+      "id": 14,
+      "image": "https://alta-static.lemon.do/Alta/f02fc423-fe90-4b85-8c47-f99d54b5251eb3007bb1-fe07-4b9a-9837-1bbc2a77d6da.png"
+    }
+  ]
 }

@@ -136,7 +136,7 @@ export default function CategoryPopper() {
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 35, color: '#F97316' }}>
-                          {getIcon(cat.icon)} {/* İkon funksiyasını çağırırıq */}
+                          {getIcon(cat.icon)}
                         </ListItemIcon>
                         <ListItemText 
                           primary={
