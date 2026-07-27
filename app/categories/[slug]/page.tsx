@@ -27,12 +27,12 @@ interface RawResponseData {
 export default function CategoryDetailPage() {
   const params = useParams();
   const router = useRouter();
-  
+
   const currentSlug = (params?.slug as string) || "";
 
   const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   const [openMainSlug, setOpenMainSlug] = useState<string | null>(null);
   const [selectedSubSlug, setSelectedSubSlug] = useState<string | null>(null);
 
@@ -41,7 +41,7 @@ export default function CategoryDetailPage() {
       .then((res) => res.json())
       .then((data: unknown) => {
         let extracted: CategoryItem[] = [];
-        
+
         if (Array.isArray(data)) {
           extracted = data as CategoryItem[];
         } else if (data && typeof data === 'object' && 'categories' in data) {
@@ -50,7 +50,7 @@ export default function CategoryDetailPage() {
             extracted = innerData as CategoryItem[];
           }
         }
-        
+
         setAllCategories(extracted);
         setOpenMainSlug(currentSlug);
         setLoading(false);
@@ -72,55 +72,60 @@ export default function CategoryDetailPage() {
   const activeCategory = allCategories.find(cat => cat.slug === currentSlug);
   const displaySubCategories = activeCategory?.subCategories || [];
 
-  const filteredSubs = selectedSubSlug 
+  const filteredSubs = selectedSubSlug
     ? displaySubCategories.filter(sub => sub.slug === selectedSubSlug)
     : displaySubCategories;
 
   return (
-    <Box 
-      sx={{ 
-        position: 'absolute',
-        top: { xs: '60px', md: '90px' }, 
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex', 
-        flexDirection: { xs: 'column', md: 'row' }, 
-        gap: { xs: 2, md: 4 }, 
-        maxWidth: 1166, 
+    <Box
+      sx={{
+        maxWidth: 1166,
         width: '100%',
+        mx: 'auto',
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: { xs: 2, md: 4 },
         px: { xs: 2, md: 0 },
-        pb: 12,
+        pt: { xs: 2, md: 3 },
+        pb: { xs: 6, md: 12 },
         alignItems: 'flex-start',
       }}
     >
-      {/* Menu */}
-      <Box 
-        sx={{ 
-          width: { xs: '100%', md: '280px' }, 
-          border: '1px solid #e2e8f0', 
-          borderRadius: '12px', 
+      {/* Sidebar Menu */}
+      <Box
+        sx={{
+          width: { xs: '100%', md: '280px' },
+          border: '1px solid #e2e8f0',
+          borderRadius: '12px',
           p: 1,
           backgroundColor: '#ffffff',
-          position: { xs: 'relative', md: 'sticky' }, 
+          position: { xs: 'relative', md: 'sticky' },
           top: { xs: 'auto', md: '20px' },
           boxSizing: 'border-box',
-          flexShrink: 0
+          flexShrink: 0,
         }}
       >
-        <Typography sx={{ fontWeight: 'bold', p: 2, color: '#0f172a' }}>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            p: { xs: 1.5, md: 2 },
+            fontSize: { xs: '0.9rem', md: '1rem' },
+            color: '#0f172a',
+          }}
+        >
           Categories
         </Typography>
         <List component="nav" disablePadding>
           {allCategories.map((cat) => {
             const isCurrentUrl = cat.slug === currentSlug;
             const isMenuOpen = openMainSlug === cat.slug;
-            
+
             return (
               <Box key={cat.id} sx={{ mb: 0.5 }}>
-                <ListItemButton 
+                <ListItemButton
                   selected={isCurrentUrl}
                   onClick={() => {
-                    setSelectedSubSlug(null); 
+                    setSelectedSubSlug(null);
                     if (isMenuOpen) {
                       setOpenMainSlug(null);
                     } else {
@@ -130,22 +135,23 @@ export default function CategoryDetailPage() {
                   }}
                   sx={{
                     borderRadius: '8px',
+                    py: { xs: 1, md: 1.25 },
                     '&.Mui-selected': {
                       backgroundColor: '#fff3e0',
                       color: '#ff6b00',
-                      '&:hover': { backgroundColor: '#ffe0b2' }
-                    }
+                      '&:hover': { backgroundColor: '#ffe0b2' },
+                    },
                   }}
                 >
-                  <ListItemText 
-                    primary={cat.name} 
+                  <ListItemText
+                    primary={cat.name}
                     slotProps={{
                       primary: {
                         sx: {
-                          fontSize: '0.9rem',
-                          fontWeight: isCurrentUrl ? 700 : 500
-                        }
-                      }
+                          fontSize: { xs: '0.85rem', md: '0.9rem' },
+                          fontWeight: isCurrentUrl ? 700 : 500,
+                        },
+                      },
                     }}
                   />
                   {isMenuOpen ? (
@@ -166,21 +172,21 @@ export default function CategoryDetailPage() {
                           sx={{
                             borderRadius: '6px',
                             mb: 0.2,
-                            py: 0.5,
+                            py: { xs: 0.4, md: 0.5 },
                             backgroundColor: isSubActive ? '#f1f5f9' : 'transparent',
-                            '&:hover': { backgroundColor: '#f8fafc' }
+                            '&:hover': { backgroundColor: '#f8fafc' },
                           }}
                         >
-                          <ListItemText 
-                            primary={sub.name} 
+                          <ListItemText
+                            primary={sub.name}
                             slotProps={{
                               primary: {
                                 sx: {
-                                  fontSize: '0.825rem',
+                                  fontSize: { xs: '0.8rem', md: '0.825rem' },
                                   color: isSubActive ? '#ff6b00' : '#475569',
-                                  fontWeight: isSubActive ? 600 : 400
-                                }
-                              }
+                                  fontWeight: isSubActive ? 600 : 400,
+                                },
+                              },
                             }}
                           />
                         </ListItemButton>
@@ -194,21 +200,21 @@ export default function CategoryDetailPage() {
         </List>
       </Box>
 
-      {/* Subcategories */}
-      <Box sx={{ flex: 1, width: '100%' }}>
-        <Typography 
-          variant="h5" 
-          sx={{ fontWeight: 'bold', mb: 3, color: '#0f172a', fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+      {/* Main Content Area */}
+      <Box sx={{ flex: 1, width: '100%', minWidth: 0 }}>
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: 'bold', mb: { xs: 2, md: 3 }, color: '#0f172a', fontSize: { xs: '1.1rem', md: '1.5rem' } }}
         >
           {activeCategory ? activeCategory.name : 'Category Not Found'}
         </Typography>
 
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: 2,
-            width: '100%'
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: { xs: 1.25, sm: 2 },
+            width: '100%',
           }}
         >
           {filteredSubs.length > 0 ? (
@@ -216,19 +222,19 @@ export default function CategoryDetailPage() {
               <Card
                 key={sub.id}
                 sx={{
-                  width: { 
-                    xs: 'calc(50% - 8px)', 
-                    sm: 'calc(33.33% - 11px)', 
-                    md: 'calc(25% - 12px)' 
+                  width: {
+                    xs: 'calc(50% - 7px)',
+                    sm: 'calc(33.33% - 11px)',
+                    md: 'calc(25% - 12px)',
                   },
-                  height: 190, 
+                  height: { xs: 220, sm: 240, md: 260 }, 
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'flex-start', 
-                  p: 2,
+                  alignItems: 'center',
+                  p: { xs: 1.5, md: 2 },
                   boxShadow: 'none',
                   border: '1px solid #f1f5f9',
-                  backgroundColor: '#f8fafc', 
+                  backgroundColor: '#f8fafc',
                   borderRadius: '16px',
                   cursor: 'pointer',
                   boxSizing: 'border-box',
@@ -237,37 +243,41 @@ export default function CategoryDetailPage() {
                     transform: 'translateY(-4px)',
                     boxShadow: '0px 8px 24px rgba(255, 107, 0, 0.08)',
                     backgroundColor: '#ffffff',
-                    borderColor: '#ff6b00'
-                  }
+                    borderColor: '#ff6b00',
+                  },
                 }}
               >
-                <Typography 
-                  sx={{ 
-                    fontSize: '0.8rem', 
-                    fontWeight: 700, 
-                    color: '#0f172a',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    textAlign: 'center',
-                    width: '100%',
-                    mb: 1.5,
-                    whiteSpace: 'normal',
-                    wordBreak: 'break-word'
-                  }}
-                >
-                  {sub.name}
-                </Typography>
+                {/* Başlıq Sahəsi */}
+                <Box sx={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1, width: '100%' }}>
+                  <Typography
+                    sx={{
+                      fontSize: { xs: '0.72rem', md: '0.8rem' },
+                      fontWeight: 700,
+                      color: '#0f172a',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      textAlign: 'center',
+                      lineHeight: 1.2,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {sub.name}
+                  </Typography>
+                </Box>
 
-                <Box 
-                  sx={{ 
+                {/* Şəkil Sahəsi */}
+                <Box
+                  sx={{
                     flex: 1,
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
                     width: '100%',
-                    height: '110px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justify: 'center',
                     overflow: 'hidden',
-                    position: 'relative'
+                    p: 1,
                   }}
                 >
                   {sub.img ? (
@@ -276,13 +286,14 @@ export default function CategoryDetailPage() {
                       src={sub.img}
                       alt={sub.name}
                       sx={{
-                        maxHeight: '100%',
                         maxWidth: '100%',
-                        objectFit: 'contain'
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        display: 'block',
                       }}
                     />
                   ) : (
-                    <Typography sx={{ color: '#94a3b8', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                    <Typography sx={{ color: '#94a3b8', fontSize: { xs: '0.72rem', md: '0.8rem' }, fontStyle: 'italic' }}>
                       📦 No Image
                     </Typography>
                   )}

@@ -60,7 +60,7 @@ export default function MobileHeader() {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ width:"100%"}}>
       <AppBar position="static" sx={{ backgroundColor: "#F97316", py: 0.5 }}>
         <Container maxWidth="lg">
           <Toolbar
@@ -127,7 +127,7 @@ export default function MobileHeader() {
                 />
               </Search>
 
-            
+                <Link href="/cart">
               <IconButton
                 sx={{
                   backgroundColor: "#C2410C",
@@ -140,6 +140,7 @@ export default function MobileHeader() {
               >
                 <ShoppingCartIcon sx={{ fontSize: 20 }} />
               </IconButton>
+              </Link>
 
               <Link href="/login">
               <IconButton

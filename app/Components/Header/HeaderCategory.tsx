@@ -1,18 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, MouseEvent } from 'react';
-import { 
-  Button, 
-  Popper, 
-  Paper, 
-  Box, 
-  List, 
-  ListItem, 
-  ListItemButton, 
-  ListItemText, 
-  ListItemIcon, 
-  Typography 
+import {
+  Button,
+  Popper,
+  Paper,
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  Typography,
 } from '@mui/material';
+import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ComputerIcon from '@mui/icons-material/Computer';
@@ -31,7 +32,7 @@ interface Category {
   id: number;
   name: string;
   slug: string;
-  icon: string; 
+  icon: string;
   subCategories: SubCategory[];
 }
 
@@ -44,18 +45,18 @@ const getIcon = (iconName: string) => {
       return <ComputerIcon />;
     case 'TvIcon':
       return <TvIcon />;
-       case 'SportsEsportsIcon':
+    case 'SportsEsportsIcon':
       return <SportsEsportsIcon />;
-      case 'CountertopsIcon':
+    case 'CountertopsIcon':
       return <CountertopsIcon />;
     default:
-      return <ErrorIcon />; // If there will be error while showing the icons we use Error icon as a default 
+      return <ErrorIcon />; // If there will be error while showing the icons we use Error icon as a default
   }
 };
 
 export default function CategoryPopper() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  
+
   // States for API
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
@@ -64,14 +65,14 @@ export default function CategoryPopper() {
   // Fetching data with use effect and getting URL from env for security
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
-      .then((res) => { 
+      .then((res) => {
         if (!res.ok) throw new Error("An Error occured while getting data");
         return res.json();
       })
       .then((data: Category[]) => {
         setCategories(data);
         if (data.length > 0) {
-          setActiveCategory(data[0]); // If we will get data automaticly will set data 
+          setActiveCategory(data[0]); // If we will get data automaticly will set data
         }
         setLoading(false);
       })
@@ -89,19 +90,23 @@ export default function CategoryPopper() {
     setAnchorEl(null);
   };
 
+  const handleItemClick = () => {
+    setAnchorEl(null);
+  };
+
   const open = Boolean(anchorEl);
 
   return (
     <Box onMouseLeave={handleMouseLeave} sx={{ display: 'inline-block' }}>
-      
+
       <Button
         variant="contained"
         startIcon={<MenuIcon />}
         onMouseEnter={handleMouseEnter}
-        sx={{ 
-          backgroundColor: '#C2410C', 
-          '&:hover': { backgroundColor: '#9A3412' }, 
-          textTransform: 'none', 
+        sx={{
+          backgroundColor: '#C2410C',
+          '&:hover': { backgroundColor: '#9A3412' },
+          textTransform: 'none',
           borderRadius: '30px',
           padding: "5px 15px",
           fontSize: '16px',
@@ -117,7 +122,7 @@ export default function CategoryPopper() {
         style={{ zIndex: 1300 }}
       >
         <Paper elevation={3} sx={{ display: 'flex', width: '800px', mt: 1, borderRadius: '8px', overflow: 'hidden' }}>
-          
+
           {loading ? (
             <Box sx={{ p: 3 }}>Loading...</Box>
           ) : (
@@ -128,7 +133,10 @@ export default function CategoryPopper() {
                   {categories.map((cat) => (
                     <ListItem key={cat.id} disablePadding>
                       <ListItemButton
+                        component={Link}
+                        href={`/categories/${cat.slug}`}
                         onMouseEnter={() => setActiveCategory(cat)}
+                        onClick={handleItemClick}
                         sx={{
                           bgcolor: activeCategory?.id === cat.id ? '#ffffff' : 'transparent',
                           '&:hover': { bgcolor: '#ffffff' },
@@ -138,12 +146,12 @@ export default function CategoryPopper() {
                         <ListItemIcon sx={{ minWidth: 35, color: '#F97316' }}>
                           {getIcon(cat.icon)}
                         </ListItemIcon>
-                        <ListItemText 
+                        <ListItemText
                           primary={
                             <Typography sx={{ fontSize: '14px' }}>
                               {cat.name}
                             </Typography>
-                          } 
+                          }
                         />
                       </ListItemButton>
                     </ListItem>
@@ -155,22 +163,40 @@ export default function CategoryPopper() {
               <Box sx={{ width: '65%', p: 3, bgcolor: '#ffffff' }}>
                 {activeCategory && (
                   <>
-                    <Typography variant="subtitle1" color="#F97316" sx={{ fontWeight: "bold", mb: 2 }}>
+                    <Typography
+                      component={Link}
+                      href={`/categories/${activeCategory.slug}`}
+                      onClick={handleItemClick}
+                      variant="subtitle1"
+                      color="#F97316"
+                      sx={{
+                        fontWeight: "bold",
+                        mb: 2,
+                        display: 'inline-block',
+                        textDecoration: 'none',
+                        cursor: 'pointer',
+                        '&:hover': { textDecoration: 'underline' },
+                      }}
+                    >
                       {activeCategory.name}
                     </Typography>
-                    
+
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
                       {activeCategory.subCategories.map((sub) => (
-                        <Typography 
-                          key={sub.id} 
-                          variant="body2" 
-                          sx={{ 
-                            color: '#333', 
-                            cursor: 'pointer', 
-                            '&:hover': { color: '#F97316' } 
+                        <Typography
+                          key={sub.id}
+                          component={Link}
+                          href={`/categories/${activeCategory.slug}/${sub.slug}`}
+                          onClick={handleItemClick}
+                          variant="body2"
+                          sx={{
+                            color: '#333',
+                            cursor: 'pointer',
+                            textDecoration: 'none',
+                            '&:hover': { color: '#F97316' }
                           }}
                         >
-                          {sub.name} 
+                          {sub.name}
                         </Typography>
                       ))}
                     </Box>

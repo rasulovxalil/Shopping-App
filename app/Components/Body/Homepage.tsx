@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import AdBanner from './AdBanner';
 import BodyCategory from './BodyCategory';
 import Brands from './Brands';
+import ProductList from './Productlist';
 export default function HomePage() {
   return (
         <Container maxWidth="lg">
@@ -19,6 +20,7 @@ export default function HomePage() {
       <AdBanner />
       <BodyCategory/>
       <Brands/>
+      <ProductList/>
     </Box>
     </Container>
   );

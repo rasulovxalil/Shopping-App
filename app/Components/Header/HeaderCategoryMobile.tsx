@@ -1,18 +1,19 @@
 "use client";
 import IconButton from "@mui/material/IconButton";
 import React, { useState, useEffect, MouseEvent } from 'react';
-import { 
-  Popper, 
-  Paper, 
-  Box, 
-  List, 
-  ListItem, 
-  ListItemButton, 
-  ListItemText, 
-  ListItemIcon, 
+import {
+  Popper,
+  Paper,
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
   Typography,
   ClickAwayListener
 } from '@mui/material';
+import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ComputerIcon from '@mui/icons-material/Computer';
@@ -31,7 +32,7 @@ interface Category {
   id: number;
   name: string;
   slug: string;
-  icon: string; 
+  icon: string;
   subCategories: SubCategory[];
 }
 
@@ -54,7 +55,7 @@ export default function HeaderCategoryMobile() {
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
-      .then((res) => { 
+      .then((res) => {
         if (!res.ok) throw new Error("An Error occured while getting data");
         return res.json();
       })
@@ -71,7 +72,7 @@ export default function HeaderCategoryMobile() {
       });
   }, []);
 
-  
+
   const handleButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -85,7 +86,7 @@ export default function HeaderCategoryMobile() {
   return (
     <Box sx={{ display: 'inline-block' }}>
       <IconButton
-        onClick={handleButtonClick} 
+        onClick={handleButtonClick}
         sx={{
           backgroundColor: "#f0f0f0",
           color: "#000000",
@@ -103,30 +104,35 @@ export default function HeaderCategoryMobile() {
         placement="bottom-start"
         style={{ zIndex: 1300 }}
       >
-        
+
         <ClickAwayListener onClickAway={handleClose}>
-          <Paper 
-            elevation={3} 
-            sx={{ 
-              display: 'flex', 
+          <Paper
+            elevation={3}
+            sx={{
+              display: 'flex',
               width: { xs: 'calc(100vw - 32px)', sm: '600px', md: '800px' },
               maxWidth: '800px',
-              mt: 1, 
-              borderRadius: '8px', 
-              overflow: 'hidden' 
+              mt: 1,
+              borderRadius: '8px',
+              overflow: 'hidden'
             }}
           >
             {loading ? (
               <Box sx={{ p: 3 }}>Loading...</Box>
             ) : (
               <>
-            
+
                 <Box sx={{ width: '40%', borderRight: '1px solid #f0f0f0', bgcolor: '#fafafa' }}>
                   <List disablePadding>
                     {categories.map((cat) => (
                       <ListItem key={cat.id} disablePadding>
                         <ListItemButton
-                          onClick={() => setActiveCategory(cat)} 
+                          component={Link}
+                          href={`/categories/${cat.slug}`}
+                          onClick={() => {
+                            setActiveCategory(cat);
+                            handleClose();
+                          }}
                           sx={{
                             bgcolor: activeCategory?.id === cat.id ? '#ffffff' : 'transparent',
                             '&:hover': { bgcolor: '#ffffff' },
@@ -137,12 +143,12 @@ export default function HeaderCategoryMobile() {
                           <ListItemIcon sx={{ minWidth: 30, color: '#F97316' }}>
                             {getIcon(cat.icon)}
                           </ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary={
                               <Typography sx={{ fontSize: '13px', fontWeight: activeCategory?.id === cat.id ? 'bold' : 'normal' }}>
                                 {cat.name}
                               </Typography>
-                            } 
+                            }
                           />
                         </ListItemButton>
                       </ListItem>
@@ -150,28 +156,45 @@ export default function HeaderCategoryMobile() {
                   </List>
                 </Box>
 
-                
+
                 <Box sx={{ width: '60%', p: 2, bgcolor: '#ffffff', maxHeight: '400px', overflowY: 'auto' }}>
                   {activeCategory && (
                     <>
-                      <Typography variant="subtitle2" color="#F97316" sx={{ fontWeight: "bold", mb: 1.5 }}>
+                      <Typography
+                        component={Link}
+                        href={`/categories/${activeCategory.slug}`}
+                        onClick={handleClose}
+                        variant="subtitle2"
+                        color="#F97316"
+                        sx={{
+                          fontWeight: "bold",
+                          mb: 1.5,
+                          display: 'inline-block',
+                          textDecoration: 'none',
+                          cursor: 'pointer',
+                          '&:hover': { textDecoration: 'underline' },
+                        }}
+                      >
                         {activeCategory.name}
                       </Typography>
-                      
+
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                         {activeCategory.subCategories.map((sub) => (
-                          <Typography 
-                            key={sub.id} 
-                            variant="body2" 
+                          <Typography
+                            key={sub.id}
+                            component={Link}
+                            href={`/categories/${activeCategory.slug}/${sub.slug}`}
+                            variant="body2"
                             onClick={handleClose}
-                            sx={{ 
-                              color: '#333', 
-                              cursor: 'pointer', 
+                            sx={{
+                              color: '#333',
+                              cursor: 'pointer',
                               fontSize: '13px',
-                              '&:hover': { color: '#F97316' } 
+                              textDecoration: 'none',
+                              '&:hover': { color: '#F97316' }
                             }}
                           >
-                            {sub.name} 
+                            {sub.name}
                           </Typography>
                         ))}
                       </Box>

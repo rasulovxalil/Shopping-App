@@ -57,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }: { theme: Theme }) => ({
 
 export default function DesktopHeader() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ width:"100%" }}>
       <AppBar position="static" sx={{ backgroundColor: "#F97316" }}>
         <Container maxWidth="lg">
           <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
@@ -92,6 +92,7 @@ export default function DesktopHeader() {
               />
             </Search>
             {/* Cart*/}
+            <Link href="/cart">
             <IconButton
               sx={{
                 backgroundColor: "#C2410C",
@@ -106,6 +107,7 @@ export default function DesktopHeader() {
             >
               <ShoppingCartIcon sx={{ fontSize: 24 }} />
             </IconButton>
+            </Link>
             {/* Login page*/}
              <Link href="/login">
             <Button

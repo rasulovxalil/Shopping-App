@@ -15,16 +15,15 @@ export default function Brands() {
   const [loading, setLoading] = useState<boolean>(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // JSON-server və ya backend-dən datanın fetch olunması
   useEffect(() => {
-    fetch("http://localhost:5000/brands", { cache: "no-store" })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/brands`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data: BrandItem[]) => {
         setBrands(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Brend məlumatı yüklənərkən xəttə:", err);
+        console.error("An Error occured:", err);
         setLoading(false);
       });
   }, []);
@@ -56,80 +55,92 @@ export default function Brands() {
     <Box
       sx={{
         maxWidth: 1166,
+        width: "100%",
+        minWidth: 0,
         mx: "auto",
-        px: { xs: 2, md: 0 },
-        mt: 6,
-        mb: 6,
-        position: "relative", 
+        px: { xs: 2, sm: 3, md: 0 },
+        mt: { xs: 4, md: 6 },
+        mb: { xs: 4, md: 6 },
+        position: "relative",
       }}
     >
-      {/* Başlıq */}
+      {/* Header */}
       <Typography
         variant="h5"
         sx={{
           fontWeight: "bold",
-          mb: 3,
+          mb: { xs: 2, md: 3 },
           color: "#0f172a",
-          fontSize: { xs: "1.25rem", md: "1.5rem" },
+          fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
         }}
       >
         Brands
       </Typography>
-      <Box sx={{ position: "relative", display: "flex", alignItems: "center" }}>
+
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+          mx: { xs: -2, sm: -3, md: 0 },
+          px: { xs: 2, sm: 3, md: 0 },
+        }}
+      >
+        {/* Handle scroll left */}
         <IconButton
           onClick={() => handleScroll("left")}
           sx={{
             position: "absolute",
-            left: -20,
+            left: { xs: 0, sm: -8, md: -20 },
             zIndex: 10,
-            backgroundColor: "#ffffff",
-            boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.15)",
             border: "1px solid #f1f5f9",
-            display: { xs: "none", sm: "flex" }, // Mobildə barmaqla sürüşdürmə bəs edir
+            display: "flex",
             "&:hover": { backgroundColor: "#f8fafc" },
-            width: 40,
-            height: 40,
+            width: { xs: 30, sm: 36, md: 40 },
+            height: { xs: 30, sm: 36, md: 40 },
           }}
         >
-          <ArrowBackIosNewIcon sx={{ fontSize: "1rem", color: "#0f172a" }} />
+          <ArrowBackIosNewIcon sx={{ fontSize: { xs: "0.8rem", md: "1rem" }, color: "#0f172a" }} />
         </IconButton>
 
-        {/* Brands where we scroll */}
         <Box
           ref={scrollRef}
           sx={{
             display: "flex",
-            gap: 2,
+            gap: { xs: 1.5, sm: 2 },
             overflowX: "auto",
             width: "100%",
+            minWidth: 0,
             py: 1,
-        
+            px: { xs: 4.5, sm: 0 },
             scrollbarWidth: "none",
             "&::-webkit-scrollbar": { display: "none" },
             scrollBehavior: "smooth",
+            scrollSnapType: { xs: "x mandatory", md: "none" },
+            WebkitOverflowScrolling: "touch",
           }}
         >
           {brands.map((brand) => (
             <Box
               key={brand.id}
               sx={{
-              
-                minWidth: {
-                  xs: "calc(25% - 12px)",
-                  sm: "calc(16.66% - 14px)",
-                  md: "80px",
-                },
-
-             
-                height: 70,
-
+                flex: "0 0 auto",
+                scrollSnapAlign: { xs: "start", md: "none" },
+                width: { xs: 90, sm: 100, md: 90, lg: 100 },
+                minWidth: { xs: 90, sm: 100, md: 90, lg: 100 },
+                height: { xs: 56, sm: 64, md: 70 },
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: "#ffffff",
                 border: "1px solid #f1f5f9",
                 borderRadius: "12px 4px 12px 4px",
-                p: 1, 
+                p: { xs: 0.75, sm: 1 },
                 boxSizing: "border-box",
                 cursor: "pointer",
                 transition: "all 0.2s ease",
@@ -144,6 +155,7 @@ export default function Brands() {
                 component="img"
                 src={brand.image}
                 alt={`Brand ${brand.id}`}
+                loading="lazy"
                 sx={{
                   maxWidth: "100%",
                   maxHeight: "100%",
@@ -154,24 +166,24 @@ export default function Brands() {
           ))}
         </Box>
 
-        {/* SAĞ OX DUYMƏSİ */}
+        {/* Handle scroll right */}
         <IconButton
           onClick={() => handleScroll("right")}
           sx={{
             position: "absolute",
-            right: -20,
+            right: { xs: 0, sm: -8, md: -20 },
             zIndex: 10,
-            backgroundColor: "#ffffff",
-            boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.15)",
             border: "1px solid #f1f5f9",
-            display: { xs: "none", sm: "flex" },
+            display: "flex",
             "&:hover": { backgroundColor: "#f8fafc" },
-            width: 44,
-            height: 44,
+            width: { xs: 30, sm: 40, md: 44 },
+            height: { xs: 30, sm: 40, md: 44 },
           }}
         >
           <ArrowForwardIosIcon
-            sx={{ fontSize: "1rem", color: "#0f172a", pl: "4px" }}
+            sx={{ fontSize: { xs: "0.8rem", md: "1rem" }, color: "#0f172a", pl: "4px" }}
           />
         </IconButton>
       </Box>
