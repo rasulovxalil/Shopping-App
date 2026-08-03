@@ -1,55 +1,40 @@
 package handler
 
 import (
-	"backend/repository"
-	"encoding/json"
 	"net/http"
-	"strconv"
+	"backend/repository"
+
+	"github.com/labstack/echo/v4"
 )
 
 type CategoryHandler struct {
-	Repo *repository.CategoryRepository
+	repo repository.CategoryRepository
 }
 
-func NewCategoryHandler(repo *repository.CategoryRepository) *CategoryHandler {
-	return &CategoryHandler{Repo: repo}
+func NewCategoryHandler(repo repository.CategoryRepository) *CategoryHandler {
+	return &CategoryHandler{repo: repo}
 }
 
-// GET /categories
-func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	categories, err := h.Repo.GetAll()
+func (h *CategoryHandler) GetCategories(c echo.Context) error {
+	categories, err := h.repo.GetAllCategories()
 	if err != nil {
-		http.Error(w, "An error occured while gettingCategories", http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to fetch categories: " + err.Error(),
+		})
 	}
-
-	json.NewEncoder(w).Encode(categories)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"categories": categories,
+	})
 }
 
-// GET /sub-categories?category_id=1
-func (h *CategoryHandler) GetSubCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	// reading parameters from URL
-	categoryIDStr := r.URL.Query().Get("category_id")
-	if categoryIDStr == "" {
-		http.Error(w, "Category ID should be entered", http.StatusBadRequest)
-		return
-	}
-
-	categoryID, err := strconv.Atoi(categoryIDStr)
+func (h *CategoryHandler) GetSubCategories(c echo.Context) error {
+	subCategories, err := h.repo.GetSubCategories()
 	if err != nil {
-		http.Error(w, "Please enter correct ID", http.StatusBadRequest)
-		return
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to fetch sub-categories: " + err.Error(),
+		})
 	}
-
-	subCategories, err := h.Repo.GetSubCategoriesByCategoryID(categoryID)
-	if err != nil {
-		http.Error(w, "An error occured while getting SubCategories", http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(subCategories)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"subCategories": subCategories,
+	})
 }

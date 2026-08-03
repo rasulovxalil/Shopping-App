@@ -1,21 +1,26 @@
 package repository
 
 import (
-	"backend/models"
 	"database/sql"
+	"backend/models"
 )
 
-type CategoryRepository struct {
-	DB *sql.DB
+type CategoryRepository interface {
+	GetAllCategories() ([]models.Category, error)
+	GetSubCategories() ([]models.Category, error) // özün uyğun modelə/sorğuya görə dəyiş
 }
 
-func NewCategoryRepository(db *sql.DB) *CategoryRepository {
-	return &CategoryRepository{DB: db}
+type categoryRepository struct {
+	db *sql.DB
 }
 
-// Bütün əsas kateqoriyaları gətirir
-func (r *CategoryRepository) GetAll() ([]models.Category, error) {
-	rows, err := r.DB.Query("SELECT id, name, slug, icon FROM categories")
+func NewCategoryRepository(db *sql.DB) CategoryRepository {
+	return &categoryRepository{db: db}
+}
+
+func (r *categoryRepository) GetAllCategories() ([]models.Category, error) {
+	query := `SELECT id, name FROM categories`
+	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -24,39 +29,31 @@ func (r *CategoryRepository) GetAll() ([]models.Category, error) {
 	var categories []models.Category
 	for rows.Next() {
 		var c models.Category
-		if err := rows.Scan(&c.ID, &c.Name, &c.Slug, &c.Icon); err != nil {
+		if err := rows.Scan(&c.ID, &c.Name); err != nil {
 			return nil, err
 		}
 		categories = append(categories, c)
 	}
 
-	if categories == nil {
-		categories = []models.Category{}
-	}
-
 	return categories, nil
 }
 
-// Müəyyən bir kateqoriyaya aid alt kateqoriyaları gətirir
-func (r *CategoryRepository) GetSubCategoriesByCategoryID(categoryID int) ([]models.SubCategory, error) {
-	rows, err := r.DB.Query("SELECT id, category_id, name, slug, img FROM sub_categories WHERE category_id = $1", categoryID)
+func (r *categoryRepository) GetSubCategories() ([]models.Category, error) {
+	query := `SELECT id, name FROM sub_categories` // öz cədvəl/sütun adlarına uyğunlaşdır
+	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var subCategories []models.SubCategory
+	var categories []models.Category
 	for rows.Next() {
-		var sub models.SubCategory
-		if err := rows.Scan(&sub.ID, &sub.CategoryID, &sub.Name, &sub.Slug, &sub.Img); err != nil {
+		var c models.Category
+		if err := rows.Scan(&c.ID, &c.Name); err != nil {
 			return nil, err
 		}
-		subCategories = append(subCategories, sub)
+		categories = append(categories, c)
 	}
 
-	if subCategories == nil {
-		subCategories = []models.SubCategory{}
-	}
-
-	return subCategories, nil
+	return categories, nil
 }
