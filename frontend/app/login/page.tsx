@@ -14,6 +14,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoginOutlined from "@mui/icons-material/LoginOutlined";
 import { useRouter } from 'next/navigation'
+import { API_BASE_URL } from '@/app/lib/apiConfig';
 
 export default function LoginPage() {
   const router = useRouter()
@@ -24,6 +25,8 @@ export default function LoginPage() {
   const [emailHelperText, setEmailHelperText] = useState<string>("");
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [passwordHelperText, setPasswordHelperText] = useState<string>("");
+  const [submitError, setSubmitError] = useState<string>("");
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -77,30 +80,38 @@ export default function LoginPage() {
     e.preventDefault();
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password)
-    if (isEmailValid && isPasswordValid ) {
+    if (isEmailValid && isPasswordValid) {
       postData();
     }
-    console.log("Logging in:", { email, password });
   };
   async function postData() {
-    try{
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: email,
-      password: password
-    })
-  }) 
-  .then(res => res.json())
-  .then(data => console.log("Successfully posted:", data));
-  setEmail("");
-  setPassword("");
-  router.push("/")
-}
-catch(error){
-  throw error
-}}
+    setSubmitError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Login failed. Please try again.");
+      }
+
+      setEmail("");
+      setPassword("");
+      router.push("/");
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Login failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
 
 
@@ -211,11 +222,17 @@ catch(error){
               }}
             />
 
+            {submitError && (
+              <Typography sx={{ color: "#d32f2f", fontSize: "0.875rem", mt: 1 }}>
+                {submitError}
+              </Typography>
+            )}
+
             <Button
-            onClick={()=>handleSubmit}
               type="submit"
               fullWidth
               variant="contained"
+              disabled={submitting}
               sx={{
                 mt: 3,
                 mb: 2,
@@ -228,7 +245,7 @@ catch(error){
                 },
               }}
             >
-              Submit
+              {submitting ? "Submitting..." : "Submit"}
             </Button>
           </Box>
         </Paper>

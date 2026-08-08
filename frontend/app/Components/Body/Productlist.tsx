@@ -19,6 +19,8 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PercentIcon from '@mui/icons-material/Percent';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 export interface Product {
   id: number;
@@ -61,19 +63,46 @@ export default function ProductList() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    (async () => {
+    const controller = new AbortController();
+
+    const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-        if (!res.ok) throw new Error('Failed to load data.');
-        const data = await res.json();
-        setProducts(Array.isArray(data) ? data : data.products || []);
+        setError(null);
+
+        const res = await fetch(`${API_BASE_URL}/products`, {
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to load data.');
+        }
+
+        const data: unknown = await res.json();
+        const extractedProducts = extractArray<Product>(data, ['products', 'data']);
+
+        if (!controller.signal.aborted) {
+          setProducts(extractedProducts);
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
-    })();
+    };
+
+    fetchProducts();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const scroll = (direction: 'left' | 'right') => {

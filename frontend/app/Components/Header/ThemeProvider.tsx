@@ -2,7 +2,7 @@
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import React from 'react';
+import React, { useSyncExternalStore } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -22,11 +22,21 @@ const theme = createTheme({
   },
 });
 
+const emptySubscribe = () => () => {};
+
 export default function MuiProvider({ children }: { children: React.ReactNode }) {
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <div style={{ visibility: isClient ? 'visible' : 'hidden' }}>
+        {children}
+      </div>
     </ThemeProvider>
   );
 }

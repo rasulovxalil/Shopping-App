@@ -11,11 +11,19 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
 )
 
 func main() {
 	e := echo.New()
+
+	// CORS Middleware configuration to allow Next.js frontend requests
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000", "http://127.0.0.1:3000"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
 
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
@@ -42,7 +50,7 @@ func main() {
 	if err := db.Ping(); err != nil {
 		log.Fatalf("Couldn't ping database: %v", err)
 	}
-	fmt.Println(" Successfully connected to the database!")
+	fmt.Println("Successfully connected to the database!")
 
 	// Initialize repositories and handlers
 	categoryRepo := repository.NewCategoryRepository(db)
@@ -51,13 +59,49 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	userHandler := handler.NewUserHandler(userRepo)
 
-	// Routes
-	e.GET("/categories", categoryHandler.GetCategories)
-	e.GET("/sub-categories", categoryHandler.GetSubCategories)
+	aboutUsRepo := repository.NewAboutUsRepository(db)
+	aboutUsHandler := handler.NewAboutUsHandler(aboutUsRepo)
 
-	e.GET("/users", userHandler.GetUsers)
-	e.GET("/users/:id", userHandler.GetUserByID)
-	e.POST("/users", userHandler.CreateUser)
+	bannerRepo := repository.NewBannerRepository(db)
+	brandRepo := repository.NewBrandRepository(db)
+
+	bannerHandler := handler.NewBannerHandler(bannerRepo)
+	brandHandler := handler.NewBrandHandler(brandRepo)
+
+	productRepo := repository.NewProductRepository(db)
+	productHandler := handler.NewProductHandler(productRepo)
+
+	// Single API Group for ALL routes
+	api := e.Group("/api")
+	{
+		// Category routes
+		api.GET("/categories", categoryHandler.GetCategories)
+		api.GET("/sub-categories", categoryHandler.GetSubCategories)
+
+		// User routes
+		api.GET("/users", userHandler.GetUsers)
+		api.GET("/users/:id", userHandler.GetUserByID)
+		api.POST("/users", userHandler.CreateUser)
+
+		// About Us routes
+		api.GET("/about-us", aboutUsHandler.GetAll)
+		api.GET("/about-us/:slug", aboutUsHandler.GetBySlug)
+		api.GET("/aboutus", aboutUsHandler.GetAll)
+		api.GET("/aboutus/:slug", aboutUsHandler.GetBySlug)
+
+		// Banner routes
+		api.GET("/banners", bannerHandler.GetAll)
+		api.GET("/banners/:id", bannerHandler.GetByID)
+
+		// Brand routes
+		api.GET("/brands", brandHandler.GetAll)
+		api.GET("/brands/:id", brandHandler.GetByID)
+
+		//Product routes
+		api.GET("/products", productHandler.GetAll)
+		api.GET("/products/:id", productHandler.GetByID)
+		api.POST("/products", productHandler.Create)
+	}
 
 	// Start server
 	apiPort := os.Getenv("PORT")
@@ -65,8 +109,8 @@ func main() {
 		apiPort = "5000"
 	}
 
-	fmt.Printf(" Server running on: http://localhost:%s\n", apiPort)
-	if err := e.Start("localhost:" + apiPort); err != nil {
+	fmt.Printf("Server running on: http://localhost:%s\n", apiPort)
+	if err := e.Start(":" + apiPort); err != nil {
 		log.Fatalf("Server stopped: %v", err)
 	}
 }

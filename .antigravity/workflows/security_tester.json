@@ -1,0 +1,15 @@
+{
+  "name": "run_security_tests",
+  "description": "Runs Go static security code analysis (gosec) and executes backend unit tests.",
+  "command": "cd backend && go test -v ./...",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "package_path": {
+        "type": "string",
+        "description": "Optional relative path to a specific backend package (e.g. ./handler or ./repository)."
+      }
+    },
+    "required": []
+  }
+}

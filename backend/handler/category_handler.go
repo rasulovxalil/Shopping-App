@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"backend/models"
 	"backend/repository"
 
 	"github.com/labstack/echo/v4"
@@ -22,9 +23,10 @@ func (h *CategoryHandler) GetCategories(c echo.Context) error {
 			"error": "Failed to fetch categories: " + err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"categories": categories,
-	})
+	if categories == nil {
+		categories = make([]models.Category, 0)
+	}
+	return c.JSON(http.StatusOK, categories)
 }
 
 func (h *CategoryHandler) GetSubCategories(c echo.Context) error {
@@ -34,7 +36,8 @@ func (h *CategoryHandler) GetSubCategories(c echo.Context) error {
 			"error": "Failed to fetch sub-categories: " + err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"subCategories": subCategories,
-	})
+	if subCategories == nil {
+		subCategories = make([]models.SubCategory, 0)
+	}
+	return c.JSON(http.StatusOK, subCategories)
 }

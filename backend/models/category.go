@@ -2,10 +2,11 @@ package models
 
 // Main Category  struct
 type Category struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
-	Icon string `json:"icon"`
+	ID            int           `json:"id"`
+	Name          string        `json:"name"`
+	Slug          string        `json:"slug"`
+	Icon          string        `json:"icon"`
+	SubCategories []SubCategory `json:"subCategories"`
 }
 
 // Sub Category  struct 

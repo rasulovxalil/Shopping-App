@@ -1,18 +1,23 @@
 "use client";
-import { styled, alpha, Theme } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
-import Container from "@mui/material/Container";
-import HeaderCategory from "./HeaderCategory";
-import IconButton from "@mui/material/IconButton";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
+import React from "react";
 import Link from "next/link";
-import Button from "@mui/material/Button";
+import { styled, alpha, Theme } from "@mui/material/styles";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  InputBase,
+  Container,
+  IconButton,
+  Button,
+  
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import HeaderCategory from "./HeaderCategory";
 
 const Search = styled("div")(({ theme }: { theme: Theme }) => ({
   position: "relative",
@@ -36,7 +41,7 @@ const SearchIconWrapper = styled("div")(({ theme }: { theme: Theme }) => ({
   pointerEvents: "none",
   display: "flex",
   alignItems: "center",
-  justify: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }: { theme: Theme }) => ({
@@ -57,31 +62,36 @@ const StyledInputBase = styled(InputBase)(({ theme }: { theme: Theme }) => ({
 
 export default function DesktopHeader() {
   return (
-    <Box sx={{ width:"100%" }}>
+    <Box sx={{ width: "100%" }}>
       <AppBar position="static" sx={{ backgroundColor: "#F97316" }}>
         <Container maxWidth="lg">
-          <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+          <Toolbar
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             {/* Main logo */}
-            <Link
-              href={{
-                pathname: "/",
+            <Typography
+              component={Link}
+              href="/"
+              variant="h6"
+              noWrap
+              sx={{
+                display: { xs: "none", sm: "block" },
+                color: "#ffffff",
+                textDecoration: "none",
+                fontWeight: "bold",
               }}
             >
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{
-                  display: { xs: "none", sm: "block" },
-                  mr: { xs: 2, sm: 4 },
-                }}
-              >
-                Shopping App
-              </Typography>
-            </Link>
+              Shopping App
+            </Typography>
 
             <HeaderCategory />
-            {/* Search function*/}
+
+            {/* Search function */}
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -91,72 +101,86 @@ export default function DesktopHeader() {
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
-            {/* Cart*/}
-            <Link href="/cart">
-            <IconButton
+
+            {/* Right Action Items */}
+            <Box
               sx={{
-                backgroundColor: "#C2410C",
-                color: "#ffffff",
-                width: 50,
-                height: 50,
-                "&:hover": {
-                  backgroundColor: "#9A3412",
-                },
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1.5,
               }}
             >
-              <ShoppingCartIcon sx={{ fontSize: 24 }} />
-            </IconButton>
-            </Link>
-            {/* Login page*/}
-             <Link href="/login">
-            <Button
-              variant="contained"
-              startIcon={
-                <AccountCircleOutlinedIcon
-                  sx={{ fontSize: "24px !important", color: "#000000" }}
-                />
-              }
-              sx={{
-                backgroundColor: "#f0f0f0",
-                color: "#000000", 
-                textTransform: "none", 
-                borderRadius: "50px",
-                padding: "5px 15px",
-                fontSize: "16px", 
-                fontWeight: 600, 
-                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)", 
-                border: "1px solid #f0f0f0", 
-                "&:hover": {
-                  backgroundColor: "#f9f9f9",
-                  boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
-                },
-              }}
-            >
-              Sign In
-            </Button>
-            </Link>
-            {/* Language switcher*/}
-          <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#f0f0f0",
-                color: "#000000", 
-                textTransform: "none", 
-                borderRadius: "30px",
-                padding: "5px 15px",
-                fontSize: "16px", 
-                fontWeight: 600, 
-                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)", 
-                border: "1px solid #f0f0f0", 
-                "&:hover": {
-                  backgroundColor: "#f9f9f9",
-                  boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
-                },
-              }}
-            >
-              En
-            </Button>
+              {/* Cart */}
+              <IconButton
+                component={Link}
+                href="/cart"
+                sx={{
+                  backgroundColor: "#C2410C",
+                  color: "#ffffff",
+                  width: 44,
+                  height: 44,
+                  "&:hover": {
+                    backgroundColor: "#9A3412",
+                  },
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <ShoppingCartIcon sx={{ fontSize: 22 }} />
+              </IconButton>
+
+              {/* Login page */}
+              <Button
+                component={Link}
+                href="/login"
+                variant="contained"
+                startIcon={
+                  <AccountCircleOutlinedIcon
+                    sx={{ fontSize: "22px !important", color: "#000000" }}
+                  />
+                }
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  color: "#000000",
+                  textTransform: "none",
+                  borderRadius: "50px",
+                  padding: "6px 16px",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)",
+                  border: "1px solid #f0f0f0",
+                  "&:hover": {
+                    backgroundColor: "#f9f9f9",
+                    boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
+                  },
+                }}
+              >
+                Sign In
+              </Button>
+
+              {/* Language switcher */}
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#f0f0f0",
+                  color: "#000000",
+                  textTransform: "none",
+                  borderRadius: "30px",
+                  padding: "6px 14px",
+                  minWidth: "auto",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)",
+                  border: "1px solid #f0f0f0",
+                  "&:hover": {
+                    backgroundColor: "#f9f9f9",
+                    boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
+                  },
+                }}
+              >
+                En
+              </Button>
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

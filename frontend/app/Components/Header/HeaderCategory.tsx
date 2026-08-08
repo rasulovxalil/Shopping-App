@@ -21,6 +21,8 @@ import TvIcon from '@mui/icons-material/Tv';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import CountertopsIcon from '@mui/icons-material/Countertops';
 import ErrorIcon from '@mui/icons-material/Error';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 interface SubCategory {
   id: number;
@@ -64,15 +66,16 @@ export default function CategoryPopper() {
 
   // Fetching data with use effect and getting URL from env for security
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
+    fetch(`${API_BASE_URL}/categories`)
       .then((res) => {
         if (!res.ok) throw new Error("An Error occured while getting data");
         return res.json();
       })
-      .then((data: Category[]) => {
-        setCategories(data);
-        if (data.length > 0) {
-          setActiveCategory(data[0]); // If we will get data automaticly will set data
+      .then((data: unknown) => {
+        const list = extractArray<Category>(data, ["categories"]);
+        setCategories(list);
+        if (list.length > 0) {
+          setActiveCategory(list[0]); // If we will get data automaticly will set data
         }
         setLoading(false);
       })
@@ -182,7 +185,7 @@ export default function CategoryPopper() {
                     </Typography>
 
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
-                      {activeCategory.subCategories.map((sub) => (
+                      {(activeCategory.subCategories || []).map((sub) => (
                         <Typography
                           key={sub.id}
                           component={Link}

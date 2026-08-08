@@ -9,6 +9,8 @@ import ComputerIcon from "@mui/icons-material/Computer";
 import CountertopsIcon from "@mui/icons-material/Countertops";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import ErrorIcon from "@mui/icons-material/Error";
+import { API_BASE_URL } from "@/app/lib/apiConfig";
+import { extractArray } from "@/app/lib/extractArray";
 
 interface SubCategory {
   id: number;
@@ -25,10 +27,10 @@ interface CategoryItem {
 }
 
 interface RawCategoryItem {
-  id: string | number;
-  name: unknown;
-  slug: unknown;
-  icon?: unknown;
+  id?: string | number;
+  name: string;
+  slug: string;
+  icon?: string;
   subCategories?: unknown;
 }
 
@@ -61,24 +63,21 @@ export default function Categories(): React.JSX.Element {
   const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
-      cache: "no-store",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Network Error");
-        return res.json();
-      })
-      .then((data: unknown) => {
-        let extractedCategories: unknown[] = [];
+    const controller = new AbortController();
 
-        if (Array.isArray(data)) {
-          extractedCategories = data;
-        } else if (data && typeof data === "object" && "categories" in data) {
-          const innerData = (data as { categories: unknown }).categories;
-          if (Array.isArray(innerData)) {
-            extractedCategories = innerData;
-          }
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error: ${res.status}`);
         }
+
+        const data: unknown = await res.json();
+        const extractedCategories = extractArray<unknown>(data, ["categories"]);
 
         const validCategories: CategoryItem[] = extractedCategories
           .filter(
@@ -88,29 +87,44 @@ export default function Categories(): React.JSX.Element {
               "name" in item &&
               typeof (item as { name: unknown }).name === "string" &&
               "slug" in item &&
-              typeof (item as { slug: unknown }).slug === "string",
+              typeof (item as { slug: unknown }).slug === "string"
           )
-          .map((item) => {
+          .map((item, index) => {
             const nameStr = String(item.name);
             const slugStr = String(item.slug);
             const iconStr = item.icon ? String(item.icon) : "PhoneAndroidIcon";
 
             return {
-              id: item.id,
+              id: item.id !== undefined && item.id !== null ? item.id : `cat-${index}`,
               name: nameStr,
               slug: slugStr,
               icon: iconStr,
             };
           });
 
-        setCategories(validCategories);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Something went wrong:", error);
-        setHasError(true);
-        setLoading(false);
-      });
+        if (!controller.signal.aborted) {
+          setCategories(validCategories);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+        console.error("Categories fetch error:", error);
+        if (!controller.signal.aborted) {
+          setHasError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchCategories();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   if (loading) {
@@ -198,7 +212,7 @@ export default function Categories(): React.JSX.Element {
               </Typography>
             </Box>
 
-            {/* ICons*/}
+            {/* Icons */}
             <Box
               sx={{
                 width: "45%",

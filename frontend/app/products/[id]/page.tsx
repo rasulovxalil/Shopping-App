@@ -12,6 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ShareIcon from '@mui/icons-material/Share';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
 
 interface Product {
   id: number;
@@ -50,9 +51,10 @@ export default function ProductPage() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, { signal: controller.signal });
+        const res = await fetch(`${API_BASE_URL}/products/${id}`, { signal: controller.signal });
         if (!res.ok) throw new Error(res.status === 404 ? 'No data found' : "Couldn't load data");
-        setProduct(await res.json());
+        const data: Product = await res.json();
+        setProduct(data);
         setActiveImg(null);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;
@@ -80,7 +82,7 @@ export default function ProductPage() {
   if (error || !product) {
     return (
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Alert severity="error" sx={{ mb: 3 }}>{error || 'Məhsul tapılmadı.'}</Alert>
+        <Alert severity="error" sx={{ mb: 3 }}>{error || 'Couldnt find product.'}</Alert>
         <Button
           component={NextLink}
           href="/"

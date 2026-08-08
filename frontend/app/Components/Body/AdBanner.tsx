@@ -8,55 +8,72 @@ import Image from 'next/image';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 interface BannerItem {
   id: number;
   image: string;
 }
 
-export default function AdBanner(): React.JSX.Element {
+export default function AdBanner(): React.JSX.Element | null {
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/bannerdata`, { cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) throw new Error('Network Error');
-        return res.json();
-      })
-      .then((data: unknown) => {
-        let extractedBanners: unknown[] = [];
-        
-        if (Array.isArray(data)) {
-          extractedBanners = data;
-        } else if (data && typeof data === 'object' && 'bannerData' in data) {
-          const innerData = (data as { bannerData: unknown }).bannerData;
-          if (Array.isArray(innerData)) {
-            extractedBanners = innerData;
-          }
+    const controller = new AbortController();
+
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/banners`, {
+          cache: 'no-store',
+          signal: controller.signal 
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error: ${res.status}`);
         }
 
+        const data: unknown = await res.json();
+        const extractedBanners = extractArray<unknown>(data, ['banners', 'bannerData', 'data']);
+
         const validBanners: BannerItem[] = extractedBanners
-          .filter((item): item is { id?: number; image: string } => 
-            typeof item === 'object' && 
-            item !== null && 
-            'image' in item && 
-            typeof (item as { image: unknown }).image === 'string'
+          .filter((item): item is { id?: number; image: string } =>
+            typeof item === 'object' &&
+            item !== null &&
+            'image' in item &&
+            typeof (item as { image: unknown }).image === 'string' &&
+            (item as { image: string }).image.trim() !== '' // must not be an empty string
           )
           .map((item, index) => ({
             id: item.id !== undefined ? item.id : index,
             image: item.image,
           }));
 
-        setBanners(validBanners);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("An Error occured:", error);
-        setHasError(true);
-        setLoading(false);
-      });
+        if (!controller.signal.aborted) {
+          setBanners(validBanners);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return; // request was cancelled, don't touch state
+        }
+        console.error("AdBanner fetch error:", error);
+        if (!controller.signal.aborted) {
+          setHasError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchBanners();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   if (loading) {
@@ -67,17 +84,19 @@ export default function AdBanner(): React.JSX.Element {
     );
   }
 
-  if (hasError || banners.length === 0) return <></>;
+  if (hasError || banners.length === 0) {
+    return null;
+  }
 
   return (
-    <Box 
-      sx={{ 
-        width: '100%', 
-        maxWidth: 1166, 
-        mx: 'auto',     
-        mt: 2,          
-        mb: 4,          
-        px: { xs: 2, md: 0 }, 
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 1166,
+        mx: 'auto',
+        mt: 2,
+        mb: 4,
+        px: { xs: 2, md: 0 },
       }}
     >
       <Swiper
@@ -92,7 +111,7 @@ export default function AdBanner(): React.JSX.Element {
           clickable: true,
         }}
         style={{
-          borderRadius: '16px', 
+          borderRadius: '16px',
           overflow: 'hidden',
           '--swiper-pagination-color': '#9c27b0',
           '--swiper-pagination-bullet-inactive-color': '#ffffff',
@@ -105,13 +124,13 @@ export default function AdBanner(): React.JSX.Element {
             <Box
               sx={{
                 width: '100%',
-                height: { xs: 'auto', md: 362 }, 
+                height: { xs: 'auto', md: 362 },
                 aspectRatio: { xs: '1166 / 362', md: 'auto' },
                 position: 'relative',
                 userSelect: 'none',
               }}
             >
-              <Image 
+              <Image
                 src={banner.image}
                 alt="Campaign Banner"
                 fill

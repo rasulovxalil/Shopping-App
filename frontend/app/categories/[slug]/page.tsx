@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Box, Typography, List, ListItemButton, ListItemText, Collapse, Card, CircularProgress } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 interface SubCategory {
   id: number;
@@ -20,10 +22,6 @@ interface CategoryItem {
   subCategories?: SubCategory[];
 }
 
-interface RawResponseData {
-  categories?: unknown;
-}
-
 export default function CategoryDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -32,39 +30,59 @@ export default function CategoryDetailPage() {
 
   const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
 
   const [openMainSlug, setOpenMainSlug] = useState<string | null>(null);
   const [selectedSubSlug, setSelectedSubSlug] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, { cache: 'no-store' })
-      .then((res) => res.json())
-      .then((data: unknown) => {
-        let extracted: CategoryItem[] = [];
+    const controller = new AbortController();
 
-        if (Array.isArray(data)) {
-          extracted = data as CategoryItem[];
-        } else if (data && typeof data === 'object' && 'categories' in data) {
-          const innerData = (data as RawResponseData).categories;
-          if (Array.isArray(innerData)) {
-            extracted = innerData as CategoryItem[];
-          }
+    const fetchCategories = async () => {
+      try {
+        setHasError(false);
+        const res = await fetch(`${API_BASE_URL}/categories`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error: ${res.status}`);
         }
 
-        setAllCategories(extracted);
-        setOpenMainSlug(currentSlug);
-        setLoading(false);
-      })
-      .catch((err) => {
+        const data: unknown = await res.json();
+        const extracted = extractArray<CategoryItem>(data, ['categories']);
+
+        if (!controller.signal.aborted) {
+          setAllCategories(extracted);
+          setOpenMainSlug(currentSlug);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         console.error("Network Error:", err);
-        setLoading(false);
-      });
+        if (!controller.signal.aborted) setHasError(true);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    };
+
+    fetchCategories();
+
+    return () => controller.abort();
   }, [currentSlug]);
 
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <CircularProgress sx={{ color: '#ff6b00' }} />
+      </Box>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <Box sx={{ textAlign: 'center', mt: 4, color: '#64748b' }}>
+        <Typography>Couldn&apos;t load categories. Please try again later.</Typography>
       </Box>
     );
   }
@@ -247,7 +265,7 @@ export default function CategoryDetailPage() {
                   },
                 }}
               >
-                {/* Başlıq Sahəsi */}
+                {/* Title area */}
                 <Box sx={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1, width: '100%' }}>
                   <Typography
                     sx={{
@@ -268,7 +286,7 @@ export default function CategoryDetailPage() {
                   </Typography>
                 </Box>
 
-                {/* Şəkil Sahəsi */}
+                {/* Image area */}
                 <Box
                   sx={{
                     flex: 1,

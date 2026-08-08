@@ -1,8 +1,11 @@
 import { Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead } from '@mui/material';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 interface InfoData {
   id: string;
   title: string;
+  slug: string;
   body: string;
 }
 
@@ -19,14 +22,31 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
   const cleanSlug = slug.trim();
 
   const isStores = cleanSlug === 'our-stores';
-  
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/aboutus?slug=${cleanSlug}`;
 
-  const res = await fetch(url, { cache: 'no-store' });
-  const data = await res.json();
+  let pageData: (InfoData & { stores?: unknown }) | null = null;
 
+  try {
+    const url = `${API_BASE_URL}/aboutus?slug=${encodeURIComponent(cleanSlug)}`;
+    const res = await fetch(url, { cache: 'no-store' });
 
-  const pageData = Array.isArray(data) ? data[0] : data;
+    if (res.ok) {
+      const data: unknown = await res.json();
+      const items = extractArray<InfoData & { stores?: unknown }>(data, ['aboutUs', 'data']);
+
+      if (items.length > 0) {
+        // Some backend responses return the full, unfiltered list even when a
+        // slug query param was sent — filter client-side to be safe. Fall back
+        // to the single item only when the backend genuinely returned just one.
+        pageData = items.find((item) => item?.slug === cleanSlug) ?? (items.length === 1 ? items[0] : null);
+      } else if (data && typeof data === 'object' && 'title' in data) {
+        pageData = data as InfoData & { stores?: unknown };
+      }
+    } else {
+      console.error(`InfoPage fetch error: HTTP ${res.status} for slug "${cleanSlug}"`);
+    }
+  } catch (error) {
+    console.error('InfoPage fetch failed:', error);
+  }
 
   const rawStores = pageData?.stores;
   const storesArray: StoreData[] = Array.isArray(rawStores) 
@@ -75,7 +95,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         </Box>
       ) : (
         <Box>
-          {pageData && (
+          {pageData ? (
             <>
               <Typography variant="h4" sx={{ fontWeight: 700, color: '#d35400', mb: 3 }}>
                 {(pageData as InfoData).title}
@@ -84,6 +104,10 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
                 {(pageData as InfoData).body}
               </Typography>
             </>
+          ) : (
+            <Typography sx={{ color: '#999', textAlign: 'center', py: 6 }}>
+              No data found
+            </Typography>
           )}
         </Box>
       )}

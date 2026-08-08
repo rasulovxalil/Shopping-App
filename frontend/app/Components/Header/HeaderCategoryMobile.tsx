@@ -21,6 +21,8 @@ import TvIcon from '@mui/icons-material/Tv';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import CountertopsIcon from '@mui/icons-material/Countertops';
 import ErrorIcon from '@mui/icons-material/Error';
+import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { extractArray } from '@/app/lib/extractArray';
 
 interface SubCategory {
   id: number;
@@ -54,15 +56,16 @@ export default function HeaderCategoryMobile() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
+    fetch(`${API_BASE_URL}/categories`)
       .then((res) => {
         if (!res.ok) throw new Error("An Error occured while getting data");
         return res.json();
       })
-      .then((data: Category[]) => {
-        setCategories(data);
-        if (data.length > 0) {
-          setActiveCategory(data[0]);
+      .then((data: unknown) => {
+        const list = extractArray<Category>(data, ["categories"]);
+        setCategories(list);
+        if (list.length > 0) {
+          setActiveCategory(list[0]);
         }
         setLoading(false);
       })
@@ -179,7 +182,7 @@ export default function HeaderCategoryMobile() {
                       </Typography>
 
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                        {activeCategory.subCategories.map((sub) => (
+                        {(activeCategory.subCategories || []).map((sub) => (
                           <Typography
                             key={sub.id}
                             component={Link}

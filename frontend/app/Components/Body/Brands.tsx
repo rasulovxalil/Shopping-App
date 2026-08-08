@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { API_BASE_URL } from "@/app/lib/apiConfig";
+import { extractArray } from "@/app/lib/extractArray";
 
 interface BrandItem {
   id: number;
@@ -16,16 +18,55 @@ export default function Brands() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/brands`, { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data: BrandItem[]) => {
-        setBrands(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("An Error occured:", err);
-        setLoading(false);
-      });
+    const controller = new AbortController();
+
+    const fetchBrands = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/brands`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error: ${res.status}`);
+        }
+
+        const data: unknown = await res.json();
+        const extractedBrands = extractArray<unknown>(data, ["brands", "data"]);
+
+        const validBrands: BrandItem[] = extractedBrands
+          .filter(
+            (item): item is { id?: number; image: string } =>
+              typeof item === "object" &&
+              item !== null &&
+              "image" in item &&
+              typeof (item as { image: unknown }).image === "string"
+          )
+          .map((item, index) => ({
+            id: item.id !== undefined && item.id !== null ? item.id : index,
+            image: item.image,
+          }));
+
+        if (!controller.signal.aborted) {
+          setBrands(validBrands);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+        console.error("Brands fetch error:", err);
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchBrands();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const handleScroll = (direction: "left" | "right") => {
@@ -49,6 +90,10 @@ export default function Brands() {
         <CircularProgress sx={{ color: "#ff6b00" }} />
       </Box>
     );
+  }
+
+  if (brands.length === 0) {
+    return null;
   }
 
   return (

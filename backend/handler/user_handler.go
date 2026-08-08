@@ -24,10 +24,11 @@ func (h *UserHandler) GetUsers(c echo.Context) error {
 			"error": "Failed to fetch users: " + err.Error(),
 		})
 	}
+	if users == nil {
+		users = make([]models.User, 0)
+	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"users": users,
-	})
+	return c.JSON(http.StatusOK, users)
 }
 
 // GetUserByID handles request to fetch a single user by ID
