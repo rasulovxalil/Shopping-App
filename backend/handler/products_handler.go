@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -67,4 +68,50 @@ func (h *ProductHandler) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, req)
+}
+
+// PUT /api/products/:id
+func (h *ProductHandler) Update(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+	}
+
+	var req models.Product
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid request payload"})
+	}
+
+	if req.Name == "" || req.Price <= 0 {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Product name and positive price are required"})
+	}
+	req.ID = id
+
+	if err := h.repo.Update(id, &req); err != nil {
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusNotFound, echo.Map{"error": "Product not found"})
+		}
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to update product"})
+	}
+
+	return c.JSON(http.StatusOK, req)
+}
+
+// DELETE /api/products/:id
+func (h *ProductHandler) Delete(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+	}
+
+	if err := h.repo.Delete(id); err != nil {
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusNotFound, echo.Map{"error": "Product not found"})
+		}
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to delete product"})
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }

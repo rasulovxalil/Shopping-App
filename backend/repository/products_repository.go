@@ -13,6 +13,8 @@ type ProductRepository interface {
 	GetAll() ([]models.Product, error)
 	GetByID(id int) (*models.Product, error)
 	Create(product *models.Product) error
+	Update(id int, product *models.Product) error
+	Delete(id int) error
 }
 
 type productRepository struct {
@@ -108,6 +110,55 @@ func (r *productRepository) Create(product *models.Product) error {
 
 	if err != nil {
 		return fmt.Errorf("failed to create product: %w", err)
+	}
+
+	return nil
+}
+
+func (r *productRepository) Update(id int, product *models.Product) error {
+	query := `
+		UPDATE products
+		SET name = $1, brand = $2, category = $3, sub_category = $4, price = $5, description = $6, images = $7
+		WHERE id = $8`
+
+	res, err := r.db.Exec(
+		query,
+		product.Name,
+		product.Brand,
+		product.Category,
+		product.SubCategory,
+		product.Price,
+		product.Description,
+		pq.Array(product.Images),
+		id,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update product: %w", err)
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to verify product update: %w", err)
+	}
+	if rows == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}
+
+func (r *productRepository) Delete(id int) error {
+	res, err := r.db.Exec(`DELETE FROM products WHERE id = $1`, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete product: %w", err)
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to verify product delete: %w", err)
+	}
+	if rows == 0 {
+		return sql.ErrNoRows
 	}
 
 	return nil

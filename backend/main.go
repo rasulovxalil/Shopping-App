@@ -71,6 +71,9 @@ func main() {
 	productRepo := repository.NewProductRepository(db)
 	productHandler := handler.NewProductHandler(productRepo)
 
+	cartRepo := repository.NewCartRepository(db)
+	cartHandler := handler.NewCartHandler(cartRepo)
+
 	// Single API Group for ALL routes
 	api := e.Group("/api")
 	{
@@ -82,6 +85,9 @@ func main() {
 		api.GET("/users", userHandler.GetUsers)
 		api.GET("/users/:id", userHandler.GetUserByID)
 		api.POST("/users", userHandler.CreateUser)
+		api.PUT("/users/:id", userHandler.UpdateUser)
+		api.DELETE("/users/:id", userHandler.DeleteUser)
+		api.POST("/login", userHandler.Login)
 
 		// About Us routes
 		api.GET("/about-us", aboutUsHandler.GetAll)
@@ -101,6 +107,15 @@ func main() {
 		api.GET("/products", productHandler.GetAll)
 		api.GET("/products/:id", productHandler.GetByID)
 		api.POST("/products", productHandler.Create)
+		api.PUT("/products/:id", productHandler.Update)
+		api.DELETE("/products/:id", productHandler.Delete)
+
+		// Cart routes (per-user)
+		api.GET("/cart/:userId", cartHandler.GetCart)
+		api.POST("/cart/:userId", cartHandler.AddItem)
+		api.PUT("/cart/:userId/:productId", cartHandler.UpdateItem)
+		api.DELETE("/cart/:userId/:productId", cartHandler.RemoveItem)
+		api.DELETE("/cart/:userId", cartHandler.ClearCart)
 	}
 
 	// Start server
