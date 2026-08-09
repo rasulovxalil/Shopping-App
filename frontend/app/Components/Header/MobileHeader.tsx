@@ -1,63 +1,26 @@
 "use client";
 import React, { useState } from "react";
-import { styled, alpha, Theme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
+import Tooltip from "@mui/material/Tooltip";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
 import Button from "@mui/material/Button";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import HeaderCategoryMobile from "@/app/Components/Header/HeaderCategoryMobile";
-
-interface StyledProps {
-  theme: Theme;
-}
-
-const Search = styled("div")(({ theme }: StyledProps) => ({
-  position: "relative",
-  borderRadius: "50px",
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  display: "flex",
-  alignItems: "center",
-  transition: theme.transitions.create(["width", "background-color"], {
-    easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.standard,
-  }),
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }: StyledProps) => ({
-  padding: theme.spacing(0, 1.5),
-  height: "100%",
-  position: "absolute",
-  right: 0,
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }: StyledProps) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(0.8, 0, 0.8, 2),
-    paddingRight: `calc(1em + ${theme.spacing(3.5)})`,
-    fontSize: "14px",
-    width: "100%",
-  },
-}));
+import SearchBox from "@/app/Components/Header/SearchBox";
+import { useAuth } from "@/app/Components/Auth/AuthContext";
+import { useCart } from "@/app/Components/Cart/CartContext";
 
 export default function MobileHeader() {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const { user, logout } = useAuth();
+  const { totalCount } = useCart();
 
   return (
     <Box sx={{ width:"100%"}}>
@@ -107,25 +70,7 @@ export default function MobileHeader() {
               }}
             >
             
-              <Search
-                sx={{
-                  width: isFocused 
-                    ? { xs: "130px", sm: "220px", md: "280px" } 
-                    : "38px", 
-                  height: 38,
-                  backgroundColor: isFocused ? alpha("#ffffff", 0.25) : alpha("#ffffff", 0.15)
-                }}
-              >
-                <SearchIconWrapper>
-                  <SearchIcon sx={{ fontSize: 20 }} />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder={isFocused ? "Search..." : ""}
-                  inputProps={{ "aria-label": "search" }}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-              </Search>
+              <SearchBox variant="mobile" onFocusChange={setIsFocused} />
 
                 <Link href="/cart">
               <IconButton
@@ -138,25 +83,45 @@ export default function MobileHeader() {
                   flexShrink: 0,
                 }}
               >
-                <ShoppingCartIcon sx={{ fontSize: 20 }} />
+                <Badge badgeContent={totalCount} color="error" invisible={totalCount === 0}>
+                  <ShoppingCartIcon sx={{ fontSize: 20 }} />
+                </Badge>
               </IconButton>
               </Link>
 
-              <Link href="/login">
-              <IconButton
-                sx={{
-                  backgroundColor: "#f0f0f0",
-                  color: "#000000",
-                  width: 38,
-                  height: 38,
-                  "&:hover": { backgroundColor: "#f9f9f9" },
-                  flexShrink: 0,
-                }}
-              >
-                <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
-              </IconButton>
+              {user ? (
+                <Tooltip title={`Signed in as ${user.email} — tap to sign out`}>
+                  <IconButton
+                    onClick={logout}
+                    sx={{
+                      backgroundColor: "#22c55e",
+                      color: "#ffffff",
+                      width: 38,
+                      height: 38,
+                      "&:hover": { backgroundColor: "#16a34a" },
+                      flexShrink: 0,
+                    }}
+                  >
+                    <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
+                  </IconButton>
+                </Tooltip>
+              ) : (
+                <Link href="/login">
+                  <IconButton
+                    sx={{
+                      backgroundColor: "#f0f0f0",
+                      color: "#000000",
+                      width: 38,
+                      height: 38,
+                      "&:hover": { backgroundColor: "#f9f9f9" },
+                      flexShrink: 0,
+                    }}
+                  >
+                    <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
+                  </IconButton>
                 </Link>
-            
+              )}
+
               <Button
                 variant="contained"
                 sx={{

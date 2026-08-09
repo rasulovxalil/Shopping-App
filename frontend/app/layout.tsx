@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import MuiProvider from "./Components/Header/ThemeProvider";
-import Header from "./Components/Header/Header";
-import Footer from "./Components/Footer/Footer";
+import SiteChrome from "./Components/Header/SiteChrome";
+import { AuthProvider } from "./Components/Auth/AuthContext";
+import { CartProvider } from "./Components/Cart/CartContext";
 import type { Viewport } from "next";
 
 
@@ -39,11 +41,15 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <MuiProvider>
-          <Header />
-          <main className="flex-1 bg-white">{children}</main>
-          <Footer />
-        </MuiProvider>
+        <AppRouterCacheProvider options={{ key: "mui" }}>
+          <MuiProvider>
+            <AuthProvider>
+              <CartProvider>
+                <SiteChrome>{children}</SiteChrome>
+              </CartProvider>
+            </AuthProvider>
+          </MuiProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
 import {
   Box, Container, Typography, Card, IconButton, Stack, Button,
@@ -13,6 +13,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ShareIcon from '@mui/icons-material/Share';
 import { API_BASE_URL } from '@/app/lib/apiConfig';
+import { useCart } from '@/app/Components/Cart/CartContext';
 
 interface Product {
   id: number;
@@ -36,12 +37,36 @@ const valueSx = { fontWeight: 600, color: '#000', fontSize: '14px' };
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const { items: cartItems, addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('MAIN');
   const [activeImg, setActiveImg] = useState<string | null>(null);
+
+  const handleAdd = async () => {
+    if (!product) return;
+    try {
+      await addToCart(product.id, 1);
+    } catch (err) {
+      console.error('Add to cart failed:', err);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!product) return;
+    try {
+      const alreadyInCart = cartItems.some((item) => item.productId === product.id);
+      if (!alreadyInCart) {
+        await addToCart(product.id, 1);
+      }
+      router.push('/cart');
+    } catch (err) {
+      console.error('Buy now failed:', err);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -197,12 +222,12 @@ export default function ProductPage() {
 
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #eaeaea', pb: 2.5, mb: 2.5 }}>
                   <Typography variant="h4" sx={{ fontWeight: 800 }}>{product.price} GEL</Typography>
-                  <Button variant="contained" sx={{ bgcolor: PURPLE, borderRadius: '20px', px: 4, py: 1, textTransform: 'none', fontWeight: 'bold', boxShadow: 'none', '&:hover': { bgcolor: PURPLE_DARK } }}>
+                  <Button onClick={handleBuyNow} variant="contained" sx={{ bgcolor: PURPLE, borderRadius: '20px', px: 4, py: 1, textTransform: 'none', fontWeight: 'bold', boxShadow: 'none', '&:hover': { bgcolor: PURPLE_DARK } }}>
                     Buy
                   </Button>
                 </Box>
 
-                <Button fullWidth variant="outlined" startIcon={<ShoppingCartOutlinedIcon />} sx={{ borderRadius: '25px', py: 1.2, color: '#333', borderColor: '#e0e0e0', textTransform: 'none', fontWeight: 'bold', '&:hover': { borderColor: '#ccc', bgcolor: '#f9f9f9' } }}>
+                <Button onClick={handleAdd} fullWidth variant="outlined" startIcon={<ShoppingCartOutlinedIcon />} sx={{ borderRadius: '25px', py: 1.2, color: '#333', borderColor: '#e0e0e0', textTransform: 'none', fontWeight: 'bold', '&:hover': { borderColor: '#ccc', bgcolor: '#f9f9f9' } }}>
                   Add
                 </Button>
               </Card>

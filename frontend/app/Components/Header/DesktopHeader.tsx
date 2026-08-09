@@ -2,65 +2,24 @@
 
 import React from "react";
 import Link from "next/link";
-import { styled, alpha, Theme } from "@mui/material/styles";
 import {
   AppBar,
   Box,
   Toolbar,
   Typography,
-  InputBase,
   Container,
-  IconButton,
   Button,
-  
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import HeaderCategory from "./HeaderCategory";
-
-const Search = styled("div")(({ theme }: { theme: Theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }: { theme: Theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }: { theme: Theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "30ch",
-      "&:focus": {
-        width: "35ch",
-      },
-    },
-  },
-}));
+import SearchBox from "./SearchBox";
+import CartMenu from "@/app/Components/Cart/CartMenu";
+import { useAuth } from "@/app/Components/Auth/AuthContext";
 
 export default function DesktopHeader() {
+  const { user, logout } = useAuth();
+
   return (
     <Box sx={{ width: "100%" }}>
       <AppBar position="static" sx={{ backgroundColor: "#F97316" }}>
@@ -92,15 +51,7 @@ export default function DesktopHeader() {
             <HeaderCategory />
 
             {/* Search function */}
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="What are you looking for?..."
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
+            <SearchBox variant="desktop" />
 
             {/* Right Action Items */}
             <Box
@@ -112,51 +63,64 @@ export default function DesktopHeader() {
               }}
             >
               {/* Cart */}
-              <IconButton
-                component={Link}
-                href="/cart"
-                sx={{
-                  backgroundColor: "#C2410C",
-                  color: "#ffffff",
-                  width: 44,
-                  height: 44,
-                  "&:hover": {
-                    backgroundColor: "#9A3412",
-                  },
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <ShoppingCartIcon sx={{ fontSize: 22 }} />
-              </IconButton>
+              <CartMenu size={44} iconFontSize={22} />
 
-              {/* Login page */}
-              <Button
-                component={Link}
-                href="/login"
-                variant="contained"
-                startIcon={
-                  <AccountCircleOutlinedIcon
-                    sx={{ fontSize: "22px !important", color: "#000000" }}
-                  />
-                }
-                sx={{
-                  backgroundColor: "#f0f0f0",
-                  color: "#000000",
-                  textTransform: "none",
-                  borderRadius: "50px",
-                  padding: "6px 16px",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)",
-                  border: "1px solid #f0f0f0",
-                  "&:hover": {
-                    backgroundColor: "#f9f9f9",
-                    boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
-                  },
-                }}
-              >
-                Sign In
-              </Button>
+              {/* Login / Sign out */}
+              {user ? (
+                <Button
+                  onClick={logout}
+                  variant="contained"
+                  startIcon={<LogoutOutlinedIcon sx={{ fontSize: "20px !important", color: "#000000" }} />}
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    color: "#000000",
+                    textTransform: "none",
+                    borderRadius: "50px",
+                    padding: "6px 16px",
+                    fontSize: "15px",
+                    fontWeight: 600,
+                    maxWidth: 220,
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)",
+                    border: "1px solid #f0f0f0",
+                    "&:hover": {
+                      backgroundColor: "#f9f9f9",
+                      boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
+                    },
+                  }}
+                >
+                  <Box component="span" sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {user.email}
+                  </Box>
+                </Button>
+              ) : (
+                <Button
+                  component={Link}
+                  href="/login"
+                  variant="contained"
+                  startIcon={
+                    <AccountCircleOutlinedIcon
+                      sx={{ fontSize: "22px !important", color: "#000000" }}
+                    />
+                  }
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    color: "#000000",
+                    textTransform: "none",
+                    borderRadius: "50px",
+                    padding: "6px 16px",
+                    fontSize: "15px",
+                    fontWeight: 600,
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)",
+                    border: "1px solid #f0f0f0",
+                    "&:hover": {
+                      backgroundColor: "#f9f9f9",
+                      boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.08)",
+                    },
+                  }}
+                >
+                  Sign In
+                </Button>
+              )}
 
               {/* Language switcher */}
               <Button

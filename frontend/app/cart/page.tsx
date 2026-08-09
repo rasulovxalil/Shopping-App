@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import Link from "next/link";
 import {
   Box,
   Typography,
@@ -9,7 +10,10 @@ import {
   Divider,
   SvgIcon,
   SvgIconProps,
+  CircularProgress,
 } from "@mui/material";
+import { useAuth } from "@/app/Components/Auth/AuthContext";
+import { useCart } from "@/app/Components/Cart/CartContext";
 
 const DeleteIcon = (props: SvgIconProps) => (
   <SvgIcon {...props}>
@@ -35,57 +39,59 @@ const PlusIcon = (props: SvgIconProps) => (
   </SvgIcon>
 );
 
-interface CartItem {
-  id: string;
-  code: string;
-  title: string;
-  image: string;
-  price: number;
-  oldPrice?: number;
-  monthlyPrice?: number;
-  quantity: number;
-}
-
-const INITIAL_ITEMS: CartItem[] = [
-  {
-    id: "1",
-    code: "139444",
-    title: "ViewSonic VX2776 27'' FHD VX2776-SMH - Black",
-    image: "https://via.placeholder.com/100",
-    price: 499,
-    oldPrice: 649,
-    monthlyPrice: 42,
-    quantity: 1,
-  },
-];
-
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>(INITIAL_ITEMS);
+  const { user } = useAuth();
+  const { items: cartItems, loading, updateQuantity, removeFromCart, clearCart } = useCart();
 
-  const handleQuantityChange = (id: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const newQty = item.quantity + delta;
-          return { ...item, quantity: newQty > 0 ? newQty : 1 };
-        }
-        return item;
-      })
+  const handleQuantityChange = (productId: number, currentQuantity: number, delta: number) => {
+    const newQty = currentQuantity + delta;
+    updateQuantity(productId, newQty > 0 ? newQty : 1);
+  };
+
+  const sumAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  if (!user) {
+    return (
+      <Box
+        sx={{
+          maxWidth: 1100,
+          width: "100%",
+          mx: "auto",
+          p: { xs: 2, sm: 3, md: 4 },
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          gap: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ color: "#0f172a", fontWeight: 700 }}>
+          Sign in to view your cart
+        </Typography>
+        <Typography sx={{ color: "#94a3b8" }}>
+          Your cart is saved to your account, so you&apos;ll need to sign in first.
+        </Typography>
+        <Button
+          component={Link}
+          href="/login"
+          variant="contained"
+          sx={{
+            mt: 1,
+            backgroundColor: "#f97316",
+            borderRadius: "50px",
+            textTransform: "none",
+            fontWeight: 700,
+            px: 4,
+            "&:hover": { backgroundColor: "#ea580c" },
+          }}
+        >
+          Sign In
+        </Button>
+      </Box>
     );
-  };
-
-  const handleRemoveItem = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
-  };
-
-  const sumAmount = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  }
 
   return (
     <Box
@@ -124,7 +130,7 @@ export default function CartPage() {
           </Typography>
           {cartItems.length > 0 && (
             <Button
-              onClick={handleClearCart}
+              onClick={() => clearCart()}
               startIcon={<ClearIcon fontSize="small" />}
               sx={{
                 color: "#64748b",
@@ -142,11 +148,15 @@ export default function CartPage() {
         <Divider sx={{ mb: { xs: 2, sm: 3 } }} />
 
         {/* Cart List */}
-        {cartItems.length > 0 ? (
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+            <CircularProgress sx={{ color: "#f97316" }} />
+          </Box>
+        ) : cartItems.length > 0 ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 2, sm: 3 } }}>
             {cartItems.map((item) => (
               <Box
-                key={item.id}
+                key={item.productId}
                 sx={{
                   display: "flex",
                   flexDirection: { xs: "column", sm: "row" },
@@ -162,19 +172,23 @@ export default function CartPage() {
                   "&:hover": { backgroundColor: "#fafafa" },
                 }}
               >
-                {/* ITem Info*/}
+                {/* Item Info */}
                 <Box
+                  component={Link}
+                  href={`/products/${item.productId}`}
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     gap: 2,
                     flex: 1,
+                    textDecoration: "none",
+                    color: "inherit",
                   }}
                 >
                   <Box
                     component="img"
-                    src={item.image}
-                    alt={item.title}
+                    src={item.images?.[0] || "/placeholder.png"}
+                    alt={item.name}
                     sx={{
                       width: { xs: 64, sm: 80 },
                       height: { xs: 64, sm: 80 },
@@ -191,7 +205,7 @@ export default function CartPage() {
                       variant="caption"
                       sx={{ color: "#94a3b8", display: "block", mb: 0.25 }}
                     >
-                      Code: {item.code}
+                      Code: {item.productId} &middot; {item.brand}
                     </Typography>
                     <Typography
                       variant="subtitle1"
@@ -203,7 +217,7 @@ export default function CartPage() {
                         lineHeight: 1.3,
                       }}
                     >
-                      {item.title}
+                      {item.name}
                     </Typography>
                   </Box>
                 </Box>
@@ -235,7 +249,7 @@ export default function CartPage() {
                   >
                     <IconButton
                       size="small"
-                      onClick={() => handleQuantityChange(item.id, -1)}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, -1)}
                       sx={{ color: "#ffffff", p: 0.4 }}
                     >
                       <MinusIcon fontSize="small" />
@@ -253,7 +267,7 @@ export default function CartPage() {
                     </Typography>
                     <IconButton
                       size="small"
-                      onClick={() => handleQuantityChange(item.id, 1)}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, 1)}
                       sx={{ color: "#ffffff", p: 0.4 }}
                     >
                       <PlusIcon fontSize="small" />
@@ -269,54 +283,20 @@ export default function CartPage() {
                     }}
                   >
                     <Box sx={{ textAlign: "right" }}>
-                      <Box
+                      <Typography
+                        variant="h6"
                         sx={{
-                          display: "flex",
-                          alignItems: "baseline",
-                          justifyContent: "flex-end",
-                          gap: 0.8,
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          fontSize: { xs: "1rem", sm: "1.25rem" },
                         }}
                       >
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: 700,
-                            color: "#0f172a",
-                            fontSize: { xs: "1rem", sm: "1.25rem" },
-                          }}
-                        >
-                          {item.price * item.quantity} GEL
-                        </Typography>
-                        {item.oldPrice && (
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: "#94a3b8",
-                              textDecoration: "line-through",
-                              fontSize: { xs: "0.75rem", sm: "0.85rem" },
-                            }}
-                          >
-                            {item.oldPrice * item.quantity} GEL
-                          </Typography>
-                        )}
-                      </Box>
-                      {item.monthlyPrice && (
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "#ff6b00",
-                            fontWeight: 600,
-                            display: "block",
-                            fontSize: { xs: "0.7rem", sm: "0.75rem" },
-                          }}
-                        >
-                          Per Month: From {item.monthlyPrice} GEL
-                        </Typography>
-                      )}
+                        {item.price * item.quantity} GEL
+                      </Typography>
                     </Box>
 
                     <IconButton
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => removeFromCart(item.productId)}
                       sx={{
                         backgroundColor: "#f8fafc",
                         color: "#64748b",
@@ -341,7 +321,7 @@ export default function CartPage() {
       </Box>
 
       {/* Bottom part and buy button */}
-      {cartItems.length > 0 && (
+      {!loading && cartItems.length > 0 && (
         <Box sx={{ mt: { xs: 4, sm: 6 } }}>
           <Divider sx={{ mb: { xs: 2.5, sm: 4 } }} />
           <Box

@@ -1,6 +1,5 @@
 import { Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead } from '@mui/material';
 import { API_BASE_URL } from '@/app/lib/apiConfig';
-import { extractArray } from '@/app/lib/extractArray';
 
 interface InfoData {
   id: string;
@@ -31,15 +30,16 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
 
     if (res.ok) {
       const data: unknown = await res.json();
-      const items = extractArray<InfoData & { stores?: unknown }>(data, ['aboutUs', 'data']);
+      type Item = InfoData & { stores?: unknown };
 
-      if (items.length > 0) {
+      if (Array.isArray(data)) {
         // Some backend responses return the full, unfiltered list even when a
         // slug query param was sent — filter client-side to be safe. Fall back
         // to the single item only when the backend genuinely returned just one.
+        const items = data as Item[];
         pageData = items.find((item) => item?.slug === cleanSlug) ?? (items.length === 1 ? items[0] : null);
       } else if (data && typeof data === 'object' && 'title' in data) {
-        pageData = data as InfoData & { stores?: unknown };
+        pageData = data as Item;
       }
     } else {
       console.error(`InfoPage fetch error: HTTP ${res.status} for slug "${cleanSlug}"`);

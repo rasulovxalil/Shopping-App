@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Box,
   Card,
@@ -21,6 +22,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { API_BASE_URL } from '@/app/lib/apiConfig';
 import { extractArray } from '@/app/lib/extractArray';
+import { useCart } from '@/app/Components/Cart/CartContext';
 
 export interface Product {
   id: number;
@@ -61,6 +63,28 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { items: cartItems, addToCart } = useCart();
+  const router = useRouter();
+
+  const handleAdd = async (productId: number) => {
+    try {
+      await addToCart(productId, 1);
+    } catch (err) {
+      console.error('Add to cart failed:', err);
+    }
+  };
+
+  const handleBuyNow = async (productId: number) => {
+    try {
+      const alreadyInCart = cartItems.some((item) => item.productId === productId);
+      if (!alreadyInCart) {
+        await addToCart(productId, 1);
+      }
+      router.push('/cart');
+    } catch (err) {
+      console.error('Buy now failed:', err);
+    }
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -278,13 +302,15 @@ export default function ProductList() {
 
                     {/* Bottom actions */}
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <IconButton sx={{ border: '1px solid #e0e0e0', borderRadius: '50%', p: 1 }}>
+                      <IconButton
+                        onClick={() => handleAdd(product.id)}
+                        sx={{ border: '1px solid #e0e0e0', borderRadius: '50%', p: 1 }}
+                      >
                         <ShoppingCartOutlinedIcon sx={{ fontSize: 20, color: '#333' }} />
                       </IconButton>
 
                       <Button
-                        component={Link}
-                        href={href}
+                        onClick={() => handleBuyNow(product.id)}
                         fullWidth
                         variant="contained"
                         disabled={!inStock}
