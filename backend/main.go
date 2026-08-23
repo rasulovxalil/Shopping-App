@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
 	"backend/handler"
@@ -13,9 +12,30 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func main() {
+	logFile, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(fmt.Sprintf("failed to open log file: %v", err))
+	}
+	defer logFile.Close()
+
+	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+	fileEncoderCfg := zap.NewProductionEncoderConfig()
+	fileEncoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+	fileEncoder := zapcore.NewJSONEncoder(fileEncoderCfg)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), zap.DebugLevel),
+		zapcore.NewCore(fileEncoder, zapcore.AddSync(logFile), zap.DebugLevel),
+	)
+
+	logger := zap.New(core, zap.AddCaller())
+	defer logger.Sync()
+
 	e := echo.New()
 
 	// CORS Middleware configuration to allow Next.js frontend requests
@@ -25,9 +45,32 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 	}))
 
+	// Request logging middleware (zap)
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogMethod:  true,
+		LogURI:     true,
+		LogStatus:  true,
+		LogLatency: true,
+		LogError:   true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			fields := []zap.Field{
+				zap.String("method", v.Method),
+				zap.String("uri", v.URI),
+				zap.Int("status", v.Status),
+				zap.Duration("latency", v.Latency),
+			}
+			if v.Error != nil {
+				logger.Error("request", append(fields, zap.Error(v.Error))...)
+			} else {
+				logger.Info("request", fields...)
+			}
+			return nil
+		},
+	}))
+
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
-		log.Println("Warning: .env file not found")
+		logger.Warn(".env file not found")
 	}
 
 	// Database connection string
@@ -43,14 +86,14 @@ func main() {
 	// Connect to database
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Database connection error: %v", err)
+		logger.Fatal("Database connection error", zap.Error(err))
 	}
 	defer db.Close()
 
 	if err := db.Ping(); err != nil {
-		log.Fatalf("Couldn't ping database: %v", err)
+		logger.Fatal("Couldn't ping database", zap.Error(err))
 	}
-	fmt.Println("Successfully connected to the database!")
+	logger.Info("Successfully connected to the database!")
 
 	// Initialize repositories and handlers
 	categoryRepo := repository.NewCategoryRepository(db)
@@ -124,8 +167,8 @@ func main() {
 		apiPort = "5000"
 	}
 
-	fmt.Printf("Server running on: http://localhost:%s\n", apiPort)
+	logger.Info("Server running", zap.String("port", apiPort))
 	if err := e.Start(":" + apiPort); err != nil {
-		log.Fatalf("Server stopped: %v", err)
+		logger.Fatal("Server stopped", zap.Error(err))
 	}
 }

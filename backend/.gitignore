@@ -12,3 +12,6 @@ main
 # IDE / Editor folders
 .vscode/
 .idea/
+
+# Log files
+*.log
