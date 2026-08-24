@@ -2,12 +2,16 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 
 	"backend/handler"
 	"backend/repository"
 
+	"github.com/golang-migrate/migrate/v4"
+	migratepostgres "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -95,6 +99,11 @@ func main() {
 	}
 	logger.Info("Successfully connected to the database!")
 
+	// Run database migrations
+	if err := runMigrations(db, logger); err != nil {
+		logger.Fatal("Migration failed", zap.Error(err))
+	}
+
 	// Initialize repositories and handlers
 	categoryRepo := repository.NewCategoryRepository(db)
 	categoryHandler := handler.NewCategoryHandler(categoryRepo)
@@ -171,4 +180,25 @@ func main() {
 	if err := e.Start(":" + apiPort); err != nil {
 		logger.Fatal("Server stopped", zap.Error(err))
 	}
+}
+
+// runMigrations applies all pending "up" migrations from the migrations
+// folder to the database, so the schema is always current on startup.
+func runMigrations(db *sql.DB, logger *zap.Logger) error {
+	driver, err := migratepostgres.WithInstance(db, &migratepostgres.Config{})
+	if err != nil {
+		return fmt.Errorf("could not create migration driver: %w", err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
+	if err != nil {
+		return fmt.Errorf("could not initialize migrations: %w", err)
+	}
+
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return fmt.Errorf("could not apply migrations: %w", err)
+	}
+
+	logger.Info("Database migrations are up to date")
+	return nil
 }
